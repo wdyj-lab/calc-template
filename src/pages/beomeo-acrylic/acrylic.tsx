@@ -8,14 +8,12 @@ import * as yup from "yup";
 import getSimpleProps from "@/lib/utils/getSimpleProps";
 
 const AcrylicCalcPage = () => {
-  const [selectedColor, setSelectedColor] = useState("none");
-  const [selectedThickness, setSelectedThickness] = useState("none");
-  const [selectedManufacture, setSelectedManufacture] = useState("none");
+  const noneRegex = /^(?!none$).*/;
 
   const applicationSpecResolver = yup.object().shape({
-    color: yup.string().required("색상을 선택해주세요"),
-    thickness: yup.string().required("두께를 선택해주세요."),
-    manufacture: yup.string().required("가공을 선택해주세요."),
+    color: yup.string().matches(noneRegex, "색상을 선택해주세요."),
+    thickness: yup.string().matches(noneRegex, "두께를 선택해주세요."),
+    manufacture: yup.string().matches(noneRegex, "가공 형태를 선택해주세요."),
     width: yup
       .number()
       .typeError("숫자만 입력해주세요.")
@@ -24,6 +22,11 @@ const AcrylicCalcPage = () => {
       .number()
       .typeError("숫자만 입력해주세요.")
       .required("세로를 입력해주세요."),
+    quantity: yup
+      .number()
+      .typeError("숫자만 입력해주세요.")
+      .min(1, "최소 1개 이상 선택")
+      .required("수량을 입력해주세요."),
   });
 
   const {
@@ -40,8 +43,9 @@ const AcrylicCalcPage = () => {
       color: "none",
       thickness: "none",
       manufacture: "none",
-      width: 0,
-      height: 0,
+      width: undefined,
+      height: undefined,
+      quantity: undefined,
     },
   });
 
@@ -86,17 +90,17 @@ const AcrylicCalcPage = () => {
 
   const thicknessOptions = [
     { key: "none", value: "none", label: "두께" },
-    { key: "2t", value: "2t", label: "2T" },
-    { key: "3t", value: "3t", label: "3T" },
-    { key: "4t", value: "4t", label: "4T" },
-    { key: "5t", value: "5t", label: "5T" },
-    { key: "6t", value: "6t", label: "6T" },
-    { key: "8t", value: "8t", label: "8T" },
-    { key: "10t", value: "10t", label: "10T" },
-    { key: "12t", value: "12t", label: "12T" },
-    { key: "15t", value: "15t", label: "15T" },
-    { key: "18t", value: "18t", label: "18T" },
-    { key: "20t", value: "20t", label: "20T" },
+    { key: "2t", value: "0.0258", label: "2T" },
+    { key: "3t", value: "0.0375", label: "3T" },
+    { key: "4t", value: "0.0483", label: "4T" },
+    { key: "5t", value: "0.0591", label: "5T" },
+    { key: "6t", value: "0.07", label: "6T" },
+    { key: "8t", value: "0.0958", label: "8T" },
+    { key: "10t", value: "0.1166", label: "10T" },
+    { key: "12t", value: "0.1416", label: "12T" },
+    { key: "15t", value: "0.175", label: "15T" },
+    { key: "18t", value: "0.2083", label: "18T" },
+    { key: "20t", value: "0.25", label: "20T" },
   ];
 
   const manufactureOptions = [
@@ -108,13 +112,22 @@ const AcrylicCalcPage = () => {
     { key: "mirror", value: "mirror", label: "경면가공" },
   ];
 
+  const pricePerPrice =
+    Math.ceil(
+      (watch("width") * watch("height") * Number(watch("thickness"))) / 10
+    ) * 10;
+
+  const calcData = pricePerPrice * watch("quantity");
+
+  const isResult = calcData.toString() !== "NaN" && calcData > 0 && isValid;
+
   return (
     <Wrapper>
       <Calculator>
         <SelectOption>
           <DropdownV2
             width="100%"
-            optionContainerWidth="90%"
+            optionContainerWidth="100%"
             options={colorOptions}
             {...getSimpleProps({ key: "color", setValue, watch, errors })}
           />
@@ -122,7 +135,7 @@ const AcrylicCalcPage = () => {
         <SelectOption>
           <DropdownV2
             width="100%"
-            optionContainerWidth="90%"
+            optionContainerWidth="100%"
             options={thicknessOptions}
             {...getSimpleProps({ key: "thickness", setValue, watch, errors })}
           />
@@ -130,7 +143,7 @@ const AcrylicCalcPage = () => {
         <SelectOption>
           <DropdownV2
             width="100%"
-            optionContainerWidth="90%"
+            optionContainerWidth="100%"
             options={manufactureOptions}
             {...getSimpleProps({
               key: "manufacture",
@@ -164,13 +177,21 @@ const AcrylicCalcPage = () => {
             <label>수량</label>
             <TextInputV2
               width="100%"
-              maxLength={10}
+              maxLength={12}
               textAlignment="center"
-              {...getSimpleProps({ key: "width", setValue, watch, errors })}
+              {...getSimpleProps({ key: "quantity", setValue, watch, errors })}
+              onKeyDown={(e) => trigger()}
             />
           </LabelOption>
         </SizeWrapper>
       </Calculator>
+      {isResult && (
+        <ResultArea>
+          1장당 가격 <b>{pricePerPrice.toLocaleString("ko")}원</b> X 주문 수량{" "}
+          <b>{watch("quantity")}장</b> = 총 주문 금액{" "}
+          <b>{calcData.toLocaleString("ko")}원</b>
+        </ResultArea>
+      )}
     </Wrapper>
   );
 };
@@ -180,8 +201,10 @@ export default AcrylicCalcPage;
 const Wrapper = styled.div`
   width: 100%;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
+  max-width: 1020px;
 `;
 
 const Calculator = styled.div`
@@ -224,4 +247,8 @@ const LabelText = styled.div`
 const SizeWrapper = styled.div`
   display: flex;
   gap: 10px;
+`;
+
+const ResultArea = styled.div`
+  margin-top: 20px;
 `;

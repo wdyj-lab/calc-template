@@ -9,7 +9,8 @@ const big = new Set<Size>(["lg", "xl", "xxl", "xxxl"]);
 const HintText = styled.div<{
   inputSize?: Size;
 }>`
-  margin-top: 4px;
+  position: absolute;
+  bottom: -20px;
   font-weight: 500;
 
   font-size: ${({ inputSize }) =>

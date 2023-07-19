@@ -148,6 +148,7 @@ export default DropdownV2;
 
 const DropdownWrapper = styled.div<{ width: string }>`
   display: flex;
+  flex-direction: column;
   position: relative;
   width: ${({ width }) => width};
 `;
@@ -208,28 +209,24 @@ const sizeToMatchingCss = (
       return css`
         height: 48px;
         ${foundations.typography.Body1};
-        padding: 0px ${isOpened && !alert ? "11px" : "12px"};
         border-radius: 4px;
       `;
     case "md":
       return css`
         height: 34px;
         ${foundations.typography.Body2};
-        padding: 0px ${isOpened && !alert ? "11px" : "12px"};
         border-radius: 3px;
       `;
     case "sm":
       return css`
         height: 28px;
         ${foundations.typography.Body3};
-        padding: 0px ${isOpened && !alert ? "11px" : "12px"};
         border-radius: 3px;
       `;
     case "xs":
       return css`
         height: 24px;
         ${foundations.typography.Body3};
-        padding: 0px ${isOpened && !alert ? "7px" : "8px"};
         border-radius: 3px;
       `;
     default:
@@ -251,4 +248,9 @@ const DropdownOptionBackground = styled.div`
     background-color: ${({ theme }) =>
       Color(theme.palette.core.Dimmed).alpha(0.5).toString()};
   }
+`;
+
+const AbsoluteHintText = styled.div`
+  position: absolute;
+  bottom: -20px;
 `;
