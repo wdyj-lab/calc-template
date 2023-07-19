@@ -16,8 +16,14 @@ const AcrylicCalcPage = () => {
     color: yup.string().required("색상을 선택해주세요"),
     thickness: yup.string().required("두께를 선택해주세요."),
     manufacture: yup.string().required("가공을 선택해주세요."),
-    width: yup.number().required("가로를 입력해주세요."),
-    height: yup.number().required("세로를 입력해주세요."),
+    width: yup
+      .number()
+      .typeError("숫자만 입력해주세요.")
+      .required("가로를 입력해주세요."),
+    height: yup
+      .number()
+      .typeError("숫자만 입력해주세요.")
+      .required("세로를 입력해주세요."),
   });
 
   const {
@@ -108,7 +114,7 @@ const AcrylicCalcPage = () => {
         <SelectOption>
           <DropdownV2
             width="100%"
-            optionContainerWidth="100%"
+            optionContainerWidth="90%"
             options={colorOptions}
             {...getSimpleProps({ key: "color", setValue, watch, errors })}
           />
@@ -116,7 +122,7 @@ const AcrylicCalcPage = () => {
         <SelectOption>
           <DropdownV2
             width="100%"
-            optionContainerWidth="100%"
+            optionContainerWidth="90%"
             options={thicknessOptions}
             {...getSimpleProps({ key: "thickness", setValue, watch, errors })}
           />
@@ -124,6 +130,7 @@ const AcrylicCalcPage = () => {
         <SelectOption>
           <DropdownV2
             width="100%"
+            optionContainerWidth="90%"
             options={manufactureOptions}
             {...getSimpleProps({
               key: "manufacture",
@@ -138,6 +145,8 @@ const AcrylicCalcPage = () => {
             <label>가로</label>
             <TextInputV2
               width="100%"
+              maxLength={15}
+              textAlignment="center"
               {...getSimpleProps({ key: "width", setValue, watch, errors })}
             />
           </LabelOption>
@@ -146,6 +155,8 @@ const AcrylicCalcPage = () => {
             <label>세로</label>
             <TextInputV2
               width="100%"
+              maxLength={15}
+              textAlignment="center"
               {...getSimpleProps({ key: "height", setValue, watch, errors })}
             />
           </LabelOption>
@@ -153,6 +164,8 @@ const AcrylicCalcPage = () => {
             <label>수량</label>
             <TextInputV2
               width="100%"
+              maxLength={10}
+              textAlignment="center"
               {...getSimpleProps({ key: "width", setValue, watch, errors })}
             />
           </LabelOption>
@@ -165,6 +178,7 @@ const AcrylicCalcPage = () => {
 export default AcrylicCalcPage;
 
 const Wrapper = styled.div`
+  width: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -179,13 +193,14 @@ const Calculator = styled.div`
 
 const SelectOption = styled.div`
   width: 100%;
-  max-width: 200px;
+  min-width: 150px;
+  max-width: 170px;
 `;
 
 const LabelOption = styled.div`
   display: flex;
-  max-width: 250px;
   align-items: center;
+  width: 100%;
 
   > label {
     display: flex;
@@ -194,9 +209,9 @@ const LabelOption = styled.div`
     min-width: 50px;
     justify-content: center;
     align-items: center;
-    border-top: 1px solid #e0e0e0;
-    border-bottom: 1px solid #e0e0e0;
-    border-left: 1px solid #e0e0e0;
+    border-top: 1px solid #cbcfd6;
+    border-bottom: 1px solid #cbcfd6;
+    border-left: 1px solid #cbcfd6;
   }
 `;
 
@@ -209,7 +224,7 @@ const LabelText = styled.div`
 `;
 
 const SizeWrapper = styled.div`
-  width: 100%;
+  width: 300px;
   display: flex;
-  gap: 5px;
+  gap: 10px;
 `;
