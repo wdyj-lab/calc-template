@@ -9,14 +9,29 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@hookform/resolvers": "^3.1.1",
     "@types/node": "20.4.2",
     "@types/react": "18.2.15",
     "@types/react-dom": "18.2.7",
+    "color": "^4.2.3",
     "eslint": "8.45.0",
     "eslint-config-next": "13.4.10",
+    "lodash-es": "^4.17.21",
     "next": "13.4.10",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "typescript": "5.1.6"
+    "react-hook-form": "^7.45.2",
+    "react-icons": "^4.10.1",
+    "react-perfect-scrollbar": "^1.5.8",
+    "styled-components": "^6.0.0-rc.5",
+    "typescript": "5.1.6",
+    "yup": "^1.2.0"
+  },
+  "devDependencies": {
+    "@types/color": "^3.0.3",
+    "@types/lodash-es": "^4.17.8",
+    "@types/react-icons": "^3.0.0",
+    "@types/styled-components": "^5.1.26",
+    "@types/yup": "^0.32.0"
   }
 }
