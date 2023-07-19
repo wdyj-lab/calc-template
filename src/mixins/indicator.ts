@@ -1,10 +1,5 @@
 import Color from "color";
-import styled, {
-  css,
-  DefaultTheme,
-  FlattenInterpolation,
-  ThemeProps,
-} from "styled-components";
+import styled, { css, DefaultTheme } from "styled-components";
 
 import { InputProps } from "../types/InputProps";
 import type { MarginProps } from "../types/MarginProps";
@@ -94,103 +89,6 @@ export const disabledUncheckedIndicatorStyle = css`
   border-color: ${(props) =>
     Color(props.theme.color.primary).alpha(0.3).toString()};
   background-color: ${(props) => props.theme.color.background} !important;
-`;
-
-interface IndicatorStyleProps {
-  withoutIndicatorMargin?: boolean;
-  override?: {
-    checkedIndicatorStyle?: FlattenInterpolation<ThemeProps<DefaultTheme>>;
-    uncheckedIndicatorStyle?: FlattenInterpolation<ThemeProps<DefaultTheme>>;
-    disabledCheckedIndicatorStyle?: FlattenInterpolation<
-      ThemeProps<DefaultTheme>
-    >;
-    disabledUncheckedIndicatorStyle?: FlattenInterpolation<
-      ThemeProps<DefaultTheme>
-    >;
-    indeterminateIndicatorStyle?: FlattenInterpolation<
-      ThemeProps<DefaultTheme>
-    >;
-    disabledIndeterminateIndicatorStyle?: FlattenInterpolation<
-      ThemeProps<DefaultTheme>
-    >;
-  };
-}
-
-export const indicatorStyle = ({
-  withoutIndicatorMargin,
-  override = {},
-}: IndicatorStyleProps = {}) => css`
-  display: inline-block;
-  vertical-align: top;
-  margin-top: ${withoutIndicatorMargin ? "0" : "3px"};
-  width: 20px;
-  height: 20px;
-
-  input:checked + & {
-    ${override.checkedIndicatorStyle ?? checkedIndicatorStyle};
-  }
-
-  input:not(:checked) + & {
-    ${override.uncheckedIndicatorStyle ?? uncheckedIndicatorStyle};
-  }
-
-  input:checked:disabled + & {
-    ${override.disabledCheckedIndicatorStyle ?? disabledCheckedIndicatorStyle}
-  }
-
-  input:not(:checked):disabled + & {
-    ${override.disabledUncheckedIndicatorStyle ??
-    disabledUncheckedIndicatorStyle}
-  }
-`;
-
-interface IndeterminateIndicatorStyleProps {
-  withoutIndicatorMargin?: boolean;
-  override?: {
-    indeterminateIndicatorStyle?: FlattenInterpolation<
-      ThemeProps<DefaultTheme>
-    >;
-    disabledIndeterminateIndicatorStyle?: FlattenInterpolation<
-      ThemeProps<DefaultTheme>
-    >;
-  };
-}
-
-export const indeterminateIndicatorStyle = ({
-  withoutIndicatorMargin,
-  override = {},
-}: IndeterminateIndicatorStyleProps = {}) => css`
-  display: inline-block;
-  vertical-align: top;
-  margin-top: ${withoutIndicatorMargin ? "0" : "3px"};
-  width: 20px;
-  height: 20px;
-
-  ${checkedIndicatorStyle};
-
-  ${override.indeterminateIndicatorStyle ?? ""};
-
-  input:disabled + & {
-    ${override.disabledIndeterminateIndicatorStyle ??
-    disabledIndeterminateIndicatorStyle};
-  }
-
-  &::after {
-    content: "";
-    position: absolute;
-    display: block;
-    background: ${(props) => props.theme.color.background};
-  }
-
-  div:hover > & {
-    background-color: ${(props) =>
-      Color(props.theme.color.affordable).alpha(0.8).toString()};
-  }
-
-  div:active > & {
-    background-color: ${(props) =>
-      Color(props.theme.color.affordable).alpha(0.67).toString()};
-  }
 `;
 
 export interface IndicatorProps extends InputProps, MarginProps {

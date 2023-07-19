@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/camelcase */
 // 디자인 시스템의 네이밍을 그대로 이용하기 위해 룰을 끕니다.
 import { css } from "styled-components";
 

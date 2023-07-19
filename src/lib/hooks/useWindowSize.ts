@@ -1,5 +1,5 @@
-import { ResponsiveType } from 'lib/types/ResponsiveType';
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
+import { ResponsiveType } from "../types/ResponsiveType";
 
 const useWindowSize = () => {
   const [windowSize, setWindowSize] = useState({
@@ -39,9 +39,9 @@ const useWindowSize = () => {
         });
       }
     }
-    window.addEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
     handleResize();
-    return () => window.removeEventListener('resize', handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, [BreakPoint.PC, BreakPoint.Tablet, BreakPoint.Mobile]);
   return windowSize;
 };
