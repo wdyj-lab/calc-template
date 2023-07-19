@@ -185,6 +185,7 @@ const Wrapper = styled.div`
 `;
 
 const Calculator = styled.div`
+  margin-top: 20px;
   display: flex;
   width: 100%;
   min-width: 500px;
@@ -194,7 +195,7 @@ const Calculator = styled.div`
 const SelectOption = styled.div`
   width: 100%;
   min-width: 150px;
-  max-width: 170px;
+  max-width: 150px;
 `;
 
 const LabelOption = styled.div`
@@ -224,7 +225,6 @@ const LabelText = styled.div`
 `;
 
 const SizeWrapper = styled.div`
-  width: 300px;
   display: flex;
   gap: 10px;
 `;
