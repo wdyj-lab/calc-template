@@ -210,9 +210,6 @@ const LabelOption = styled.div`
     min-width: 50px;
     justify-content: center;
     align-items: center;
-    border-top: 1px solid #cbcfd6;
-    border-bottom: 1px solid #cbcfd6;
-    border-left: 1px solid #cbcfd6;
   }
 `;
 
