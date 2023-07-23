@@ -213,7 +213,7 @@ const Wrapper = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  max-width: 1020px;
+  max-width: 1000px;
 `;
 
 const Calculator = styled.div`
