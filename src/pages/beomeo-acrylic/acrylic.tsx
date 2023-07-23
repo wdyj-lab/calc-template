@@ -6,6 +6,7 @@ import { useForm } from "react-hook-form";
 import { styled } from "styled-components";
 import * as yup from "yup";
 import getSimpleProps from "@/lib/utils/getSimpleProps";
+import useWindowSize from "@/lib/hooks/useWindowSize";
 
 const AcrylicCalcPage = () => {
   const noneRegex = /^(?!none$).*/;
@@ -121,12 +122,15 @@ const AcrylicCalcPage = () => {
 
   const isResult = calcData.toString() !== "NaN" && calcData > 0 && isValid;
 
+  const { width } = useWindowSize();
+
   return (
     <Wrapper>
       <Calculator>
         <SelectOption>
           <DropdownV2
             width="100%"
+            dropdownSize={width > 1000 ? "md" : "lg"}
             optionContainerWidth="100%"
             options={colorOptions}
             {...getSimpleProps({ key: "color", setValue, watch, errors })}
@@ -135,6 +139,7 @@ const AcrylicCalcPage = () => {
         <SelectOption>
           <DropdownV2
             width="100%"
+            dropdownSize={width > 1000 ? "md" : "lg"}
             optionContainerWidth="100%"
             options={thicknessOptions}
             {...getSimpleProps({ key: "thickness", setValue, watch, errors })}
@@ -143,6 +148,7 @@ const AcrylicCalcPage = () => {
         <SelectOption>
           <DropdownV2
             width="100%"
+            dropdownSize={width > 1000 ? "md" : "lg"}
             optionContainerWidth="100%"
             options={manufactureOptions}
             {...getSimpleProps({
@@ -158,6 +164,7 @@ const AcrylicCalcPage = () => {
             <label>가로</label>
             <TextInputV2
               width="100%"
+              size={width > 1000 ? "md" : "lg"}
               textAlignment="center"
               maxLength={12}
               {...getSimpleProps({ key: "width", setValue, watch, errors })}
@@ -168,6 +175,7 @@ const AcrylicCalcPage = () => {
             <label>세로</label>
             <TextInputV2
               width="100%"
+              size={width > 1000 ? "md" : "lg"}
               textAlignment="center"
               maxLength={12}
               {...getSimpleProps({ key: "height", setValue, watch, errors })}
@@ -177,6 +185,7 @@ const AcrylicCalcPage = () => {
             <label>수량</label>
             <TextInputV2
               width="100%"
+              size={width > 1000 ? "md" : "lg"}
               textAlignment="center"
               maxLength={8}
               {...getSimpleProps({ key: "quantity", setValue, watch, errors })}
@@ -213,7 +222,7 @@ const Calculator = styled.div`
   width: 100%;
   gap: 10px;
 
-  @media (max-width: 1020px) {
+  @media (max-width: 1000px) {
     flex-wrap: wrap;
   }
 
@@ -227,7 +236,7 @@ const SelectOption = styled.div`
   min-width: 150px;
   max-width: 150px;
 
-  @media (max-width: 1020px) {
+  @media (max-width: 1000px) {
     flex: 1;
     max-width: 100%;
     margin-bottom: 12px;
@@ -244,11 +253,12 @@ const LabelOption = styled.div`
     height: 100%;
     background-color: #f5f5f5;
     min-width: 50px;
+    max-height: 50px;
     justify-content: center;
     align-items: center;
   }
 
-  @media (max-width: 1020px) {
+  @media (max-width: 1000px) {
     flex: 2;
   }
 
@@ -267,12 +277,16 @@ const QuantityOption = styled.div`
     height: 100%;
     background-color: #f5f5f5;
     min-width: 50px;
+    max-height: 50px;
     justify-content: center;
     align-items: center;
   }
 
-  @media (max-width: 1020px) {
+  @media (max-width: 1000px) {
     flex: 1;
+  }
+  @media (max-width: 500px) {
+    margin-bottom: 12px;
   }
 `;
 
@@ -282,6 +296,7 @@ const LabelText = styled.div`
   height: 100%;
   align-items: center;
   justify-content: center;
+  margin: auto;
 `;
 
 const SizeWrapper = styled.div`
