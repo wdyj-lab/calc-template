@@ -158,8 +158,8 @@ const AcrylicCalcPage = () => {
             <label>가로</label>
             <TextInputV2
               width="100%"
-              maxLength={15}
               textAlignment="center"
+              maxLength={12}
               {...getSimpleProps({ key: "width", setValue, watch, errors })}
             />
           </LabelOption>
@@ -168,21 +168,21 @@ const AcrylicCalcPage = () => {
             <label>세로</label>
             <TextInputV2
               width="100%"
-              maxLength={15}
               textAlignment="center"
+              maxLength={12}
               {...getSimpleProps({ key: "height", setValue, watch, errors })}
             />
           </LabelOption>
-          <LabelOption>
+          <QuantityOption>
             <label>수량</label>
             <TextInputV2
               width="100%"
-              maxLength={12}
               textAlignment="center"
+              maxLength={8}
               {...getSimpleProps({ key: "quantity", setValue, watch, errors })}
               onKeyDown={(e) => trigger()}
             />
-          </LabelOption>
+          </QuantityOption>
         </SizeWrapper>
       </Calculator>
       {isResult && (
@@ -211,14 +211,27 @@ const Calculator = styled.div`
   margin-top: 20px;
   display: flex;
   width: 100%;
-  min-width: 500px;
   gap: 10px;
+
+  @media (max-width: 1020px) {
+    flex-wrap: wrap;
+  }
+
+  @media (max-width: 500px) {
+    flex-direction: column;
+  }
 `;
 
 const SelectOption = styled.div`
   width: 100%;
   min-width: 150px;
   max-width: 150px;
+
+  @media (max-width: 1020px) {
+    flex: 1;
+    max-width: 100%;
+    margin-bottom: 12px;
+  }
 `;
 
 const LabelOption = styled.div`
@@ -234,6 +247,33 @@ const LabelOption = styled.div`
     justify-content: center;
     align-items: center;
   }
+
+  @media (max-width: 1020px) {
+    flex: 2;
+  }
+
+  @media (max-width: 500px) {
+    margin-bottom: 12px;
+  }
+`;
+
+const QuantityOption = styled.div`
+  display: flex;
+  align-items: center;
+  width: 100%;
+
+  > label {
+    display: flex;
+    height: 100%;
+    background-color: #f5f5f5;
+    min-width: 50px;
+    justify-content: center;
+    align-items: center;
+  }
+
+  @media (max-width: 1020px) {
+    flex: 1;
+  }
 `;
 
 const LabelText = styled.div`
@@ -245,8 +285,13 @@ const LabelText = styled.div`
 `;
 
 const SizeWrapper = styled.div`
+  width: 100%;
   display: flex;
   gap: 10px;
+
+  @media (max-width: 500px) {
+    flex-wrap: wrap;
+  }
 `;
 
 const ResultArea = styled.div`
