@@ -1,12 +1,13 @@
-import { yupResolver } from "@hookform/resolvers/yup";
 import DropdownV2 from "@/components/DropdownV2/DropdownV2";
 import TextInputV2 from "@/components/TextInputV2/TextInputV2";
-import { useState } from "react";
+import useWindowSize from "@/lib/hooks/useWindowSize";
+import getSimpleProps from "@/lib/utils/getSimpleProps";
+import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
 import { styled } from "styled-components";
 import * as yup from "yup";
-import getSimpleProps from "@/lib/utils/getSimpleProps";
-import useWindowSize from "@/lib/hooks/useWindowSize";
+
+import Image from "next/image";
 
 const AcrylicCalcPage = () => {
   const noneRegex = /^(?!none$).*/;
@@ -115,8 +116,8 @@ const AcrylicCalcPage = () => {
 
   const pricePerPrice =
     Math.ceil(
-      (watch("width") * watch("height") * Number(watch("thickness"))) / 10
-    ) * 10;
+      (watch("width") * watch("height") * Number(watch("thickness"))) / 100
+    ) * 100;
 
   const calcData = pricePerPrice * watch("quantity");
 
@@ -196,9 +197,54 @@ const AcrylicCalcPage = () => {
       </Calculator>
       {isResult && (
         <ResultArea>
-          1장당 가격 <b>{pricePerPrice.toLocaleString("ko")}원</b> X 주문 수량{" "}
-          <b>{watch("quantity")}장</b> = 총 주문 금액{" "}
-          <b>{calcData.toLocaleString("ko")}원</b>
+          <div>
+            1장당 가격 <b>{pricePerPrice.toLocaleString("ko")}원</b> X 주문 수량{" "}
+            <b>{watch("quantity")}장</b> = 총 주문 금액{" "}
+            <b>{calcData.toLocaleString("ko")}원</b>
+          </div>
+          <p>아래와 같이 입력해주세요!</p>
+          <ResultBox>
+            <ImageBox>
+              <Image
+                src={`/result_example1.png`}
+                width={400}
+                height={450}
+                alt={""}
+              />
+              <p>{calcData / 100}</p>
+            </ImageBox>
+            <ResultMessage>
+              <div>
+                <p>
+                  {watch("width")}x{watch("height")}mm
+                </p>
+                <p>{watch("quantity")}</p>
+              </div>
+              <div>
+                <p>
+                  {
+                    colorOptions.find(
+                      (option) => option.value === watch("color")
+                    )?.label
+                  }
+                </p>
+                <p>
+                  {
+                    thicknessOptions.find(
+                      (option) => option.value === watch("thickness")
+                    )?.label
+                  }
+                </p>
+                <p>
+                  {
+                    manufactureOptions.find(
+                      (option) => option.value === watch("manufacture")
+                    )?.label
+                  }
+                </p>
+              </div>
+            </ResultMessage>
+          </ResultBox>
         </ResultArea>
       )}
     </Wrapper>
@@ -310,5 +356,44 @@ const SizeWrapper = styled.div`
 `;
 
 const ResultArea = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
   margin-top: 20px;
+  justify-content: center;
+  align-items: center;
+`;
+
+const ResultBox = styled.div`
+  display: flex;
+  margin-top: 10px;
+`;
+
+const ResultMessage = styled.div`
+  display: flex;
+  flex-direction: column;
+  height: 450px;
+
+  p {
+    margin-top: 15px;
+    margin-bottom: 15px;
+    color: red;
+    font-weight: 600;
+  }
+`;
+
+const ImageBox = styled.div`
+  position: relative;
+  width: 100%;
+  height: 100%;
+
+  > p {
+    font-size: 20px;
+    font-weight: 600;
+    color: red;
+    background-color: white;
+    position: absolute;
+    bottom: 157px;
+    left: 120px;
+  }
 `;
