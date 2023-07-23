@@ -127,6 +127,13 @@ const AcrylicCalcPage = () => {
 
   return (
     <Wrapper>
+      <Notice>
+        <Image src={"/notice_img.png"} layout="fill" alt={""} />
+      </Notice>
+      <Title>
+        <h1>아크릴 자동 견적 계산기</h1>
+        <span>모든 사이즈의 단위는 mm를 기준으로합니다.[mm]</span>
+      </Title>
       <Calculator>
         <SelectOption>
           <DropdownV2
@@ -202,7 +209,7 @@ const AcrylicCalcPage = () => {
             <b>{watch("quantity")}장</b> = 총 주문 금액{" "}
             <b>{calcData.toLocaleString("ko")}원</b>
           </div>
-          <p>아래와 같이 입력해주세요!</p>
+          <p>옵션 및 수량을 사진과 동일하게 입력해주세요.</p>
           <ResultBox>
             <ImageBox>
               <Image
@@ -260,6 +267,33 @@ const Wrapper = styled.div`
   justify-content: center;
   align-items: center;
   max-width: 1000px;
+`;
+
+const Notice = styled.div`
+  position: relative;
+  width: 100%;
+  height: 100%;
+  padding-top: 52.84758364312268%;
+`;
+
+const Title = styled.div`
+  width: 100%;
+  height: 120px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  background-color: #586fe2;
+  color: white;
+
+  > h1 {
+    margin: 10px 0;
+  }
+
+  > span {
+    color: #b7c8ff;
+  }
 `;
 
 const Calculator = styled.div`
@@ -362,6 +396,15 @@ const ResultArea = styled.div`
   margin-top: 20px;
   justify-content: center;
   align-items: center;
+
+  > p {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #f5f5f5;
+    width: 100%;
+    height: 50px;
+  }
 `;
 
 const ResultBox = styled.div`
