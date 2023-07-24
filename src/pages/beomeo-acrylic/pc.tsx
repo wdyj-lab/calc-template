@@ -78,6 +78,7 @@ const PcCalcPage = () => {
 
   const manufactureOptions = [
     { key: "none", value: "none", label: "가공" },
+    { key: "empty", value: "empty", label: "가공없음" },
     { key: "hole", value: "hole", label: "홀가공" },
     { key: "round", value: "round", label: "모서리라운드" },
     { key: "45degress", value: "45degress", label: "테두리 45도" },
