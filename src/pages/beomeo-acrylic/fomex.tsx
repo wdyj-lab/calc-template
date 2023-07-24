@@ -176,7 +176,7 @@ const FomexCalcPage = () => {
             <b>{watch("quantity")}장</b> = 총 주문 금액{" "}
             <b>{calcData.toLocaleString("ko")}원</b>
           </div>
-          <p>아래와 같이 입력해주세요!</p>
+          <p>옵션 및 수량을 사진과 동일하게 입력해주세요.</p>
           <ResultBox>
             <ImageBox>
               <Image
