@@ -76,25 +76,25 @@ const FrameCalcPage = () => {
     { key: "none", value: "none", label: "두께" },
     { key: "2t", value: "0.0258", label: "2T" },
     { key: "3t", value: "0.0375", label: "3T" },
-    { key: "4t", value: "0.0483", label: "4T" },
+    // { key: "4t", value: "0.0483", label: "4T" },
     { key: "5t", value: "0.0591", label: "5T" },
-    { key: "6t", value: "0.07", label: "6T" },
-    { key: "8t", value: "0.0958", label: "8T" },
-    { key: "10t", value: "0.1166", label: "10T" },
-    { key: "12t", value: "0.1416", label: "12T" },
-    { key: "15t", value: "0.175", label: "15T" },
-    { key: "18t", value: "0.2083", label: "18T" },
-    { key: "20t", value: "0.25", label: "20T" },
+    // { key: "6t", value: "0.07", label: "6T" },
+    // { key: "8t", value: "0.0958", label: "8T" },
+    // { key: "10t", value: "0.1166", label: "10T" },
+    // { key: "12t", value: "0.1416", label: "12T" },
+    // { key: "15t", value: "0.175", label: "15T" },
+    // { key: "18t", value: "0.2083", label: "18T" },
+    // { key: "20t", value: "0.25", label: "20T" },
   ];
 
   const fomexThicknessOptions = [
     { key: "none", value: "none", label: "두께" },
-    { key: "1t", value: "0.0075", label: "1T" },
+    // { key: "1t", value: "0.0075", label: "1T" },
     { key: "2t", value: "0.0112", label: "2T" },
     { key: "3t", value: "0.0175", label: "3T" },
     { key: "5t", value: "0.0283", label: "5T" },
-    { key: "8t", value: "0.045", label: "8T" },
-    { key: "10t", value: "0.055", label: "10T" },
+    // { key: "8t", value: "0.045", label: "8T" },
+    // { key: "10t", value: "0.055", label: "10T" },
   ];
 
   const pricePerPrice =
@@ -221,7 +221,7 @@ const FrameCalcPage = () => {
           <ResultBox>
             <ImageBox>
               <Image
-                src={`/result_example1.png`}
+                src={`/frame_example.png`}
                 width={400}
                 height={450}
                 alt={""}
@@ -242,18 +242,17 @@ const FrameCalcPage = () => {
                       (option) => option.value === watch("material")
                     )?.label
                   }
-                </p>
-                <p>
+                  +
                   {
-                    acrylicThicknessOptions.find(
-                      (option) => option.value === watch("thickness")
+                    frontMaterialOptions.find(
+                      (option) => option.value === watch("frontMaterial")
                     )?.label
                   }
                 </p>
                 <p>
                   {
-                    frontMaterialOptions.find(
-                      (option) => option.value === watch("frontMaterial")
+                    acrylicThicknessOptions.find(
+                      (option) => option.value === watch("thickness")
                     )?.label
                   }
                 </p>

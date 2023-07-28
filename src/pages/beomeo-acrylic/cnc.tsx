@@ -194,7 +194,7 @@ const CncCalcPage = () => {
           <ResultBox>
             <ImageBox>
               <Image
-                src={`/result_example1.png`}
+                src={`/cnc_example.png`}
                 width={400}
                 height={450}
                 alt={""}
