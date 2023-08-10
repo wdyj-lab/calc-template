@@ -112,7 +112,7 @@ const AcrylicCalcPage = () => {
   const thicknessCm = Number(watch("thickness")) / 10;
 
   const pricePerPrice =
-    (Math.ceil(widthCm * heightCm * thicknessCm * 15) / 100) * 100;
+    Math.ceil((widthCm * heightCm * thicknessCm * 15) / 100) * 100;
 
   const calcData = pricePerPrice * watch("quantity");
 
