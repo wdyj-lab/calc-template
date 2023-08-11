@@ -17,13 +17,13 @@ const AcrylicCalcPage = () => {
     thickness: yup.string().matches(noneRegex, "두께를 선택해주세요."),
     width: yup
       .number()
-      .min(10, "최소 10mm 이상 입력")
+      .min(100, "최소 100mm 이상 입력")
       .max(1200, "최대 1200mm 이하 입력")
       .typeError("숫자만 입력해주세요.")
       .required("가로를 입력해주세요."),
     height: yup
       .number()
-      .min(10, "최소 10mm 이상 입력")
+      .min(100, "최소 100mm 이상 입력")
       .max(2400, "최대 2400mm 이하 입력")
       .typeError("숫자만 입력해주세요.")
       .required("세로를 입력해주세요."),
@@ -56,7 +56,8 @@ const AcrylicCalcPage = () => {
   const colorOptions = [
     { key: "none", value: "none", label: "색상" },
     { key: "transparency", value: "transparency", label: "투명" },
-    { key: "white", value: "white", label: "백색" },
+    { key: "white", value: "white", label: "백색(반투명)" },
+    { key: "white2", value: "white", label: "백색(불투명)" },
     {
       key: "black-transparency",
       value: "black-transparency",
@@ -89,22 +90,27 @@ const AcrylicCalcPage = () => {
       label: "갈색(투명)",
     },
     { key: "brown", value: "brown", label: "갈색(불투명)" },
-    { key: "etc", value: "etc", label: "그 외 (주문-메일문의)" },
   ];
 
   const thicknessOptions = [
     { key: "none", value: "none", label: "두께" },
     { key: "2t", value: "2", label: "2T" },
     { key: "3t", value: "3", label: "3T" },
-    { key: "4t", value: "4", label: "4T" },
     { key: "5t", value: "5", label: "5T" },
-    { key: "6t", value: "6", label: "6T" },
     { key: "8t", value: "8", label: "8T" },
     { key: "10t", value: "10", label: "10T" },
     { key: "12t", value: "12", label: "12T" },
     { key: "15t", value: "15", label: "15T" },
-    { key: "18t", value: "18", label: "18T" },
     { key: "20t", value: "20", label: "20T" },
+  ];
+
+  const colorThicknessOptions = [
+    { key: "none", value: "none", label: "두께" },
+    { key: "2t", value: "2", label: "2T" },
+    { key: "3t", value: "3", label: "3T" },
+    { key: "5t", value: "5", label: "5T" },
+    { key: "8t", value: "8", label: "8T" },
+    { key: "10t", value: "10", label: "10T" },
   ];
 
   const widthCm = Number(watch("width")) / 10;
@@ -144,7 +150,11 @@ const AcrylicCalcPage = () => {
             width="100%"
             dropdownSize={width > 1000 ? "md" : "lg"}
             optionContainerWidth="100%"
-            options={thicknessOptions}
+            options={
+              watch("color") === "transparency"
+                ? thicknessOptions
+                : colorThicknessOptions
+            }
             {...getSimpleProps({ key: "thickness", setValue, watch, errors })}
           />
         </SelectOption>
