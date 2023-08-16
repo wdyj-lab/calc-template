@@ -255,6 +255,13 @@ const FrameCalcPage = () => {
                   }
                 </p>
                 <p>
+                  {
+                    acrylicThicknessOptions.find(
+                      (option) => option.value === watch("thickness")
+                    )?.label
+                  }
+                </p>
+                <p>
                   {watch("frontMaterial") === "acrylic"
                     ? acrylicThicknessOptions.find(
                         (option) => option.value === watch("frontThickness")
@@ -262,13 +269,6 @@ const FrameCalcPage = () => {
                     : fomexThicknessOptions.find(
                         (option) => option.value === watch("frontThickness")
                       )?.label}
-                </p>
-                <p>
-                  {
-                    acrylicThicknessOptions.find(
-                      (option) => option.value === watch("thickness")
-                    )?.label
-                  }
                 </p>
               </div>
             </ResultMessage>
