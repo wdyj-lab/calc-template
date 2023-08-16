@@ -20,10 +20,12 @@ const PcCalcPage = () => {
     width: yup
       .number()
       .typeError("숫자만 입력해주세요.")
+      .min(10, "최소 10mm 이상 입력")
       .required("가로를 입력해주세요."),
     height: yup
       .number()
       .typeError("숫자만 입력해주세요.")
+      .min(10, "최소 10mm 이상 입력")
       .required("세로를 입력해주세요."),
     quantity: yup
       .number()

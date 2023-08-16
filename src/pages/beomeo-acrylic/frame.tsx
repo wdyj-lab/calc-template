@@ -13,19 +13,21 @@ const FrameCalcPage = () => {
   const noneRegex = /^(?!none$).*/;
 
   const applicationSpecResolver = yup.object().shape({
-    material: yup.string().matches(noneRegex, "뒷면 재질을 선택해주세요."),
-    thickness: yup.string().matches(noneRegex, "뒷면 두께를 선택해주세요."),
-    frontMaterial: yup.string().matches(noneRegex, "앞면 재질을 선택해주세요."),
+    material: yup.string().matches(noneRegex, "앞면 재질을 선택해주세요."),
+    thickness: yup.string().matches(noneRegex, "앞면 두께를 선택해주세요."),
+    frontMaterial: yup.string().matches(noneRegex, "뒷면 재질을 선택해주세요."),
     frontThickness: yup
       .string()
-      .matches(noneRegex, "앞면 두께를 선택해주세요."),
+      .matches(noneRegex, "뒷면 두께를 선택해주세요."),
     width: yup
       .number()
       .typeError("숫자만 입력해주세요.")
+      .min(10, "최소 10mm 이상 입력")
       .required("가로를 입력해주세요."),
     height: yup
       .number()
       .typeError("숫자만 입력해주세요.")
+      .min(10, "최소 10mm 이상 입력")
       .required("세로를 입력해주세요."),
     quantity: yup
       .number()
@@ -62,12 +64,12 @@ const FrameCalcPage = () => {
   ];
 
   const materialOptions = [
-    { key: "none", value: "none", label: "뒷면 재질" },
+    { key: "none", value: "none", label: "앞면 재질" },
     { key: "acrylic", value: "acrylic", label: "아크릴" },
   ];
 
   const frontMaterialOptions = [
-    { key: "none", value: "none", label: "앞면 재질" },
+    { key: "none", value: "none", label: "뒷면 재질" },
     { key: "acrylic", value: "acrylic", label: "아크릴" },
     { key: "fomex", value: "fomex", label: "포멕스" },
   ];
@@ -99,10 +101,13 @@ const FrameCalcPage = () => {
 
   const pricePerPrice =
     Math.ceil(
-      (watch("width") * watch("height") * Number(watch("thickness")) +
-        Number(watch("frontThickness"))) /
-        100
-    ) * 100;
+      (watch("width") * watch("height") * Number(watch("frontThickness"))) / 100
+    ) *
+      100 +
+    Math.ceil(
+      (watch("width") * watch("height") * Number(watch("thickness"))) / 100
+    ) *
+      100;
 
   const calcData = pricePerPrice * watch("quantity");
 
@@ -250,13 +255,6 @@ const FrameCalcPage = () => {
                   }
                 </p>
                 <p>
-                  {
-                    acrylicThicknessOptions.find(
-                      (option) => option.value === watch("thickness")
-                    )?.label
-                  }
-                </p>
-                <p>
                   {watch("frontMaterial") === "acrylic"
                     ? acrylicThicknessOptions.find(
                         (option) => option.value === watch("frontThickness")
@@ -264,6 +262,13 @@ const FrameCalcPage = () => {
                     : fomexThicknessOptions.find(
                         (option) => option.value === watch("frontThickness")
                       )?.label}
+                </p>
+                <p>
+                  {
+                    acrylicThicknessOptions.find(
+                      (option) => option.value === watch("thickness")
+                    )?.label
+                  }
                 </p>
               </div>
             </ResultMessage>
