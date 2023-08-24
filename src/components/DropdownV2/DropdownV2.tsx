@@ -41,6 +41,7 @@ export interface DropdownV2Props {
   withAllCheckOption?: boolean;
   optionContainerOpenDirection?: OpenDirection;
   labelDisplayType?: LabelDisplayType;
+  scrollMaxHeight?: string;
 }
 
 const DropdownV2: FC<DropdownV2Props> = ({
@@ -63,6 +64,7 @@ const DropdownV2: FC<DropdownV2Props> = ({
   withAllCheckOption,
   optionContainerOpenDirection = "down",
   labelDisplayType = "default",
+  scrollMaxHeight,
 }) => {
   const ref = useRef(null);
 
@@ -132,6 +134,7 @@ const DropdownV2: FC<DropdownV2Props> = ({
               options={options}
               withAllCheckOption={withAllCheckOption}
               onChange={handleChange}
+              scrollMaxHeight={scrollMaxHeight}
               optionContainerOpenDirection={optionContainerOpenDirection}
             />
           </>

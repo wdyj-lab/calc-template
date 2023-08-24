@@ -26,6 +26,7 @@ interface DropdownOptionContainerProps {
   onFilterChange?: (value: string) => void;
   withAllCheckOption?: boolean;
   optionContainerOpenDirection: OpenDirection;
+  scrollMaxHeight?: string;
 }
 
 const DropdownOptionContainer: FC<DropdownOptionContainerProps> = ({
@@ -39,6 +40,7 @@ const DropdownOptionContainer: FC<DropdownOptionContainerProps> = ({
   onFilterChange,
   withAllCheckOption,
   optionContainerOpenDirection,
+  scrollMaxHeight,
 }) => {
   useScrollLockOnMobile();
 
@@ -139,6 +141,7 @@ const DropdownOptionContainer: FC<DropdownOptionContainerProps> = ({
       <StyledScrollbar
         useFilter
         containerRef={(el) => setOptionContainerScrollRef(el)}
+        maxHeight={scrollMaxHeight}
       >
         {dropdownType === "checkbox" && withAllCheckOption && (
           <DropdownOption
@@ -224,11 +227,14 @@ const DropdownOptionContainer: FC<DropdownOptionContainerProps> = ({
 
 export default DropdownOptionContainer;
 
-const StyledScrollbar = styled(PerfectScrollbar)<{ useFilter: boolean }>`
+const StyledScrollbar = styled(PerfectScrollbar)<{
+  useFilter: boolean;
+  maxHeight?: string;
+}>`
   position: relative;
   min-height: 0;
   flex: 1;
-  max-height: 367px;
+  max-height: ${({ maxHeight }) => maxHeight || "300px"};
 
   .dropdown-option:first-child {
     margin-top: 8px;
