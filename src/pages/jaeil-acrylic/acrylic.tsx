@@ -118,7 +118,7 @@ const AcrylicCalcPage = () => {
   const thicknessCm = Number(watch("thickness")) / 10;
 
   const pricePerPrice =
-    Math.ceil((widthCm * heightCm * thicknessCm * 15) / 100) * 100;
+    Math.ceil((widthCm * heightCm * thicknessCm * 18) / 100) * 100;
 
   const calcData = pricePerPrice * watch("quantity");
 
@@ -200,42 +200,6 @@ const AcrylicCalcPage = () => {
             <b>{watch("quantity")}장</b> = 총 주문 금액{" "}
             <b>{calcData.toLocaleString("ko")}원</b>
           </div>
-          <p>옵션 및 수량을 사진과 동일하게 입력해주세요.</p>
-          <ResultBox>
-            <ImageBox>
-              <Image
-                src={`/result_example1.png`}
-                width={400}
-                height={450}
-                alt={""}
-              />
-              <p>{calcData / 100}</p>
-            </ImageBox>
-            <ResultMessage>
-              <div>
-                <p>
-                  {watch("width")}x{watch("height")}mm
-                </p>
-                <p>{watch("quantity")}</p>
-              </div>
-              <div>
-                <p>
-                  {
-                    colorOptions.find(
-                      (option) => option.value === watch("color")
-                    )?.label
-                  }
-                </p>
-                <p>
-                  {
-                    thicknessOptions.find(
-                      (option) => option.value === watch("thickness")
-                    )?.label
-                  }
-                </p>
-              </div>
-            </ResultMessage>
-          </ResultBox>
         </ResultArea>
       )}
     </Wrapper>
