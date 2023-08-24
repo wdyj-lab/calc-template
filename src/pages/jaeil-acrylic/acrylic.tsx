@@ -151,7 +151,7 @@ const AcrylicCalcPage = () => {
             width="100%"
             dropdownSize={width > 1000 ? "md" : "lg"}
             optionContainerWidth="100%"
-            scrollMaxHeight="150px"
+            scrollMaxHeight="185px"
             options={
               watch("color") === "transparency"
                 ? thicknessOptions
