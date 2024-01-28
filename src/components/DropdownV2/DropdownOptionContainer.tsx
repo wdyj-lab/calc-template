@@ -256,10 +256,11 @@ const OptionContainer = styled.div<{
         `}
   display: flex;
   flex-direction: column;
-  margin-left: -12px;
   min-width: 106px;
   max-width: ${({ optionContainerWidth }) =>
-    parseInt(optionContainerWidth, 10) >= 360 ? optionContainerWidth : "360px"};
+    parseInt(optionContainerWidth, 10) >= 360 || optionContainerWidth === "100%"
+      ? optionContainerWidth
+      : "360px"};
   width: ${({ optionContainerWidth }) => optionContainerWidth};
   min-height: 84px;
   border-radius: 3px;
@@ -270,7 +271,6 @@ const OptionContainer = styled.div<{
       ${({ theme }) => Color(theme.palette.core.Shadow).alpha(0.1).toString()},
     0px 5px 10px
       ${({ theme }) => Color(theme.palette.core.Shadow).alpha(0.1).toString()};
-  padding: 0 8px;
   z-index: ${({ theme }) => theme.elevation.contents};
 
   @media ${generateMediaQuery("<", "md")} {

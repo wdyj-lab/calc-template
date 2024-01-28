@@ -26,6 +26,7 @@ export interface DropdownV2Props {
   options: StringLabelOption[];
   dropdownSize?: DropdownSize;
   width?: string;
+  borderRadius?: string;
   optionContainerWidth?: string;
   value?: any;
   placeholder?: string;
@@ -49,6 +50,7 @@ const DropdownV2: FC<DropdownV2Props> = ({
   dropdownSize = "md",
   width = "90px",
   optionContainerWidth = "200px",
+  borderRadius,
   value,
   options,
   placeholder,
@@ -108,6 +110,7 @@ const DropdownV2: FC<DropdownV2Props> = ({
         dropdownSize={dropdownSize}
         onFocus={onFocus}
         onBlur={onBlur}
+        borderRadius={borderRadius}
       >
         <DropdownSelectedSection
           dropdownType={type}
@@ -161,9 +164,10 @@ const DropdownContainer = styled.div<{
   disabled?: boolean;
   alert: boolean;
   isOpened?: boolean;
+  borderRadius?: string;
 }>`
-  ${({ dropdownSize, isOpened, alert }) =>
-    sizeToMatchingCss(dropdownSize, isOpened, alert)};
+  ${({ dropdownSize, isOpened, alert, borderRadius }) =>
+    sizeToMatchingCss(dropdownSize, isOpened, alert, borderRadius)};
   width: 100%;
   background-color: ${({ disabled, theme }) =>
     !disabled
@@ -205,14 +209,17 @@ const DropdownContainer = styled.div<{
 const sizeToMatchingCss = (
   size: DropdownSize,
   isOpened?: boolean,
-  alert?: boolean
+  alert?: boolean,
+  borderRadius?: string
 ) => {
   switch (size) {
     case "lg":
       return css`
         height: 48px;
         ${foundations.typography.Body1};
-        border-radius: 4px;
+        ${borderRadius
+          ? `border-radius: ${borderRadius}`
+          : "border-radius: 4px"};
       `;
     case "md":
       return css`
