@@ -12,15 +12,14 @@ import {
   priceList,
   thicknesOptions,
   widthOptions,
-} from "./BrassPlate";
+} from "../../company/ntrex/BrassPlate";
 
 import {
   heightOptions as scantlingHeightOptions,
   priceList as scantlingPriceList,
   thicknesOptions as scantlingThicknesOptions,
   widthOptions as scantlingWidthOptions,
-} from "./BrassScantling";
-import ButtonV2 from "@/components/ButtonV2";
+} from "../../company/ntrex/BrassScantling";
 
 enum FoundationType {
   PLATE = "판재",
@@ -44,7 +43,7 @@ const BrassPage = () => {
   const {
     watch,
     setValue,
-    reset,
+    trigger,
     formState: { errors, isValid },
   } = useForm({
     mode: "onChange",
@@ -63,6 +62,7 @@ const BrassPage = () => {
     setValue("height", "");
     setValue("quantity", 1);
     setDirect(false);
+    trigger();
   };
 
   const handleQuantityClick = (quantity: number) => {
