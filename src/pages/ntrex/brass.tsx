@@ -260,6 +260,7 @@ const BrassPage = () => {
                   size={"lg"}
                   textAlignment="center"
                   maxLength={8}
+                  autoFocus
                   {...getSimpleProps({
                     key: "quantity",
                     setValue,
