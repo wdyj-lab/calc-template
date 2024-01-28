@@ -1,8 +1,9 @@
 import DropdownV2 from "@/components/DropdownV2";
-import useWindowSize from "@/lib/hooks/useWindowSize";
+import TextInputV2 from "@/components/TextInputV2";
 import getSimpleProps from "@/lib/utils/getSimpleProps";
 import { yupResolver } from "@hookform/resolvers/yup";
 import Image from "next/image";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import styled from "styled-components";
 import * as yup from "yup";
@@ -12,8 +13,13 @@ import {
   thicknesOptions,
   widthOptions,
 } from "./BrassPlate";
-import TextInputV2 from "@/components/TextInputV2";
-import { useState } from "react";
+
+import {
+  heightOptions as scantlingHeightOptions,
+  priceList as scantlingPriceList,
+  thicknesOptions as scantlingThicknesOptions,
+  widthOptions as scantlingWidthOptions,
+} from "./ScantlingPlate";
 
 enum FoundationType {
   PLATE = "판재",
@@ -57,8 +63,6 @@ const BrassPage = () => {
     setDirect(false);
   };
 
-  const { width } = useWindowSize();
-
   const priceFindKey = `${watch("foundationType")}: ${watch("width")}x${watch(
     "height"
   )}x${watch("thickness")}`;
@@ -73,8 +77,55 @@ const BrassPage = () => {
     { key: "300", value: 300, label: "300" },
   ];
 
-  // @ts-ignore
-  const resultPrice = isValid ? priceList[priceFindKey] * watch("quantity") : 0;
+  const foundationThicknesOptions = () => {
+    switch (watch("foundationType")) {
+      case "PLATE":
+        return thicknesOptions;
+      case "SCANTLING":
+        return scantlingThicknesOptions;
+      default:
+        return [];
+    }
+  };
+
+  const foundationWidthOptions = () => {
+    switch (watch("foundationType")) {
+      case "PLATE":
+        return widthOptions;
+      case "SCANTLING":
+        return scantlingWidthOptions;
+      default:
+        return [];
+    }
+  };
+
+  const foundationHeightOptions = () => {
+    switch (watch("foundationType")) {
+      case "PLATE":
+        return heightOptions;
+      case "SCANTLING":
+        return scantlingHeightOptions;
+      default:
+        return [];
+    }
+  };
+
+  const foundationPriceList = () => {
+    switch (watch("foundationType")) {
+      case "PLATE":
+        return priceList;
+      case "SCANTLING":
+        return scantlingPriceList;
+      default:
+        return [];
+    }
+  };
+
+  const resultPrice = isValid
+    ? // @ts-ignore
+      foundationPriceList()[priceFindKey] * watch("quantity")
+    : 0;
+
   return (
     <Layout>
       <Wrapper>
@@ -132,7 +183,7 @@ const BrassPage = () => {
                 dropdownSize={"lg"}
                 optionContainerWidth="100%"
                 scrollMaxHeight="185px"
-                options={thicknesOptions}
+                options={foundationThicknesOptions()}
                 placeholder="두께 사이즈 입력"
                 {...getSimpleProps({
                   key: "thickness",
@@ -151,7 +202,7 @@ const BrassPage = () => {
                 dropdownSize={"lg"}
                 optionContainerWidth="100%"
                 scrollMaxHeight="185px"
-                options={widthOptions}
+                options={foundationWidthOptions()}
                 placeholder="가로 사이즈 입력"
                 {...getSimpleProps({ key: "width", setValue, watch, errors })}
               />
@@ -161,7 +212,7 @@ const BrassPage = () => {
                 dropdownSize={"lg"}
                 optionContainerWidth="100%"
                 scrollMaxHeight="185px"
-                options={heightOptions}
+                options={foundationHeightOptions()}
                 placeholder="세로 사이즈 입력"
                 {...getSimpleProps({ key: "height", setValue, watch, errors })}
               />
