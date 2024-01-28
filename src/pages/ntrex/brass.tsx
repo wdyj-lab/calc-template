@@ -19,7 +19,8 @@ import {
   priceList as scantlingPriceList,
   thicknesOptions as scantlingThicknesOptions,
   widthOptions as scantlingWidthOptions,
-} from "./ScantlingPlate";
+} from "./BrassScantling";
+import ButtonV2 from "@/components/ButtonV2";
 
 enum FoundationType {
   PLATE = "판재",
@@ -43,6 +44,7 @@ const BrassPage = () => {
   const {
     watch,
     setValue,
+    reset,
     formState: { errors, isValid },
   } = useForm({
     mode: "onChange",
@@ -55,7 +57,10 @@ const BrassPage = () => {
   });
 
   const handleFoundationTypeClick = (type: keyof typeof FoundationType) => {
-    setValue("foundationType", type);
+    reset({
+      foundationType: type,
+    });
+    setDirect(false);
   };
 
   const handleQuantityClick = (quantity: number) => {
@@ -284,6 +289,33 @@ const BrassPage = () => {
               : "구매하실 상품 사양을 입력해주세요!"}
           </PriceDescription>
         </ResultArea>
+
+        {isValid && (
+          <SmartStoreDescription>
+            <SmartStoreDescriptionTitle>
+              상단에서 주문수량을{" "}
+              <b>{Math.ceil(resultPrice / 100).toLocaleString()}</b>개로
+              결제해주세요.
+            </SmartStoreDescriptionTitle>
+            <SmartStoreDescriptionImageBox>
+              <SmartStoreDescriptionQuantity>
+                {Math.ceil(resultPrice / 100)}
+              </SmartStoreDescriptionQuantity>
+              <SmartStoreDescriptionMaxQuantity>
+                총 수량 {Math.ceil(resultPrice / 100).toLocaleString()}개
+              </SmartStoreDescriptionMaxQuantity>
+              <SmartStoreDescriptionMaxPrice>
+                {resultPrice.toLocaleString()}원
+              </SmartStoreDescriptionMaxPrice>
+              <Image
+                src={"/assets/ntrex/store_result.png"}
+                alt={"result"}
+                layout={"fill"}
+                objectFit={"contain"}
+              />
+            </SmartStoreDescriptionImageBox>
+          </SmartStoreDescription>
+        )}
       </Wrapper>
     </Layout>
   );
@@ -478,4 +510,119 @@ const PriceDescription = styled.div`
   font-size: 1.2rem;
   font-weight: 400;
   color: #586fe2;
+`;
+
+const SmartStoreDescription = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: 20px;
+`;
+
+const SmartStoreDescriptionTitle = styled.div`
+  font-size: 1.5rem;
+
+  > b {
+    color: #586fe2;
+  }
+
+  @media (max-width: 550px) {
+    font-size: 1.1rem;
+  }
+`;
+
+const SmartStoreDescriptionImageBox = styled.div`
+  position: relative;
+  width: 500px;
+  height: 300px;
+
+  @media (max-width: 550px) {
+    width: 380px;
+    height: 200px;
+  }
+`;
+
+const SmartStoreDescriptionQuantity = styled.div`
+  position: absolute;
+  z-index: 1;
+
+  top: 27px;
+  left: 50px;
+
+  width: 50px;
+  height: 34px;
+  text-align: center;
+
+  border: 3px solid #d40022;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  @media (max-width: 550px) {
+    width: 32px;
+    height: 23px;
+
+    border: 2px solid #d40022;
+
+    top: 15px;
+    left: 50px;
+
+    font-size: 0.7rem;
+  }
+`;
+
+const SmartStoreDescriptionMaxQuantity = styled.div`
+  position: absolute;
+  z-index: 1;
+
+  color: #999;
+
+  top: 116px;
+  right: 200px;
+
+  background-color: #fff;
+
+  width: 160px;
+  text-align: end;
+
+  @media (max-width: 550px) {
+    width: 130px;
+    height: 14px;
+
+    background-color: #fff;
+
+    top: 75px;
+    left: 85px;
+
+    font-size: 0.7rem;
+  }
+`;
+
+const SmartStoreDescriptionMaxPrice = styled.div`
+  position: absolute;
+  z-index: 1;
+
+  font-weight: 800;
+  font-size: 1.5rem;
+
+  color: #d40022;
+
+  top: 112px;
+  right: 18px;
+
+  @media (max-width: 550px) {
+    top: 72px;
+    right: 30px;
+
+    font-size: 1rem;
+  }
+`;
+
+const ButtonWrapper = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 `;
