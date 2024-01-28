@@ -57,9 +57,11 @@ const BrassPage = () => {
   });
 
   const handleFoundationTypeClick = (type: keyof typeof FoundationType) => {
-    reset({
-      foundationType: type,
-    });
+    setValue("foundationType", type);
+    setValue("thickness", "");
+    setValue("width", "");
+    setValue("height", "");
+    setValue("quantity", 1);
     setDirect(false);
   };
 
@@ -130,6 +132,8 @@ const BrassPage = () => {
     ? // @ts-ignore
       foundationPriceList()[priceFindKey] * watch("quantity")
     : 0;
+
+  const resultResultPrice = isNaN(resultPrice) ? 0 : resultPrice;
 
   return (
     <Layout>
@@ -281,7 +285,7 @@ const BrassPage = () => {
         <ResultArea>
           <PriceWrapper>
             <PriceLabel>상품 금액</PriceLabel>
-            <PriceResult>{resultPrice.toLocaleString()}원</PriceResult>
+            <PriceResult>{resultResultPrice.toLocaleString()}원</PriceResult>
           </PriceWrapper>
           <PriceDescription>
             {isValid
@@ -294,18 +298,18 @@ const BrassPage = () => {
           <SmartStoreDescription>
             <SmartStoreDescriptionTitle>
               상단에서 주문수량을{" "}
-              <b>{Math.ceil(resultPrice / 100).toLocaleString()}</b>개로
+              <b>{Math.ceil(resultResultPrice / 100).toLocaleString()}</b>개로
               결제해주세요.
             </SmartStoreDescriptionTitle>
             <SmartStoreDescriptionImageBox>
               <SmartStoreDescriptionQuantity>
-                {Math.ceil(resultPrice / 100)}
+                {Math.ceil(resultResultPrice / 100)}
               </SmartStoreDescriptionQuantity>
               <SmartStoreDescriptionMaxQuantity>
-                총 수량 {Math.ceil(resultPrice / 100).toLocaleString()}개
+                총 수량 {Math.ceil(resultResultPrice / 100).toLocaleString()}개
               </SmartStoreDescriptionMaxQuantity>
               <SmartStoreDescriptionMaxPrice>
-                {resultPrice.toLocaleString()}원
+                {resultResultPrice.toLocaleString()}원
               </SmartStoreDescriptionMaxPrice>
               <Image
                 src={"/assets/ntrex/store_result.png"}
