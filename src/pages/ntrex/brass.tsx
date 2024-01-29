@@ -3,7 +3,7 @@ import TextInputV2 from "@/components/TextInputV2";
 import getSimpleProps from "@/lib/utils/getSimpleProps";
 import { yupResolver } from "@hookform/resolvers/yup";
 import Image from "next/image";
-import { useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import styled from "styled-components";
 import * as yup from "yup";
@@ -21,6 +21,12 @@ import {
   widthOptions as scantlingWidthOptions,
 } from "../../company/ntrex/BrassScantling";
 
+import {
+  heightOptions as sewingHeightOptions,
+  priceList as sewingPriceList,
+  widthOptions as sewingWidthOptions,
+} from "../../company/ntrex/BrassSewing";
+
 enum FoundationType {
   PLATE = "판재",
   SCANTLING = "각재",
@@ -34,7 +40,11 @@ const BrassPage = () => {
       .mixed()
       .oneOf(Object.keys(FoundationType))
       .required("재단 종류를 선택해주세요."),
-    thickness: yup.string().required("두께를 선택해주세요."),
+    thickness: yup.string()
+      .when("foundationType", {
+        is: (type: keyof typeof FoundationType) => type === "PLATE" || type === "SCANTLING",
+        then: (schema: any) => schema.required("두께를 선택해주세요.")
+      }),
     width: yup.string().required("가로를 선택해주세요."),
     height: yup.string().required("세로를 선택해주세요."),
     quantity: yup.number().typeError("").required("수량을 입력해주세요."),
@@ -101,6 +111,8 @@ const BrassPage = () => {
         return widthOptions;
       case "SCANTLING":
         return scantlingWidthOptions;
+      case "SEWING":
+        return sewingWidthOptions;
       default:
         return [];
     }
@@ -112,6 +124,8 @@ const BrassPage = () => {
         return heightOptions;
       case "SCANTLING":
         return scantlingHeightOptions;
+      case "SEWING":
+        return sewingHeightOptions;
       default:
         return [];
     }
@@ -123,6 +137,8 @@ const BrassPage = () => {
         return priceList;
       case "SCANTLING":
         return scantlingPriceList;
+      case "SEWING":
+        return sewingPriceList;
       default:
         return [];
     }
@@ -130,10 +146,41 @@ const BrassPage = () => {
 
   const resultPrice = isValid
     ? // @ts-ignore
-      foundationPriceList()[priceFindKey] * watch("quantity")
+    foundationPriceList()[priceFindKey] * watch("quantity")
     : 0;
 
   const resultResultPrice = isNaN(resultPrice) ? 0 : resultPrice;
+
+  const optionTitleObj = useCallback((type: keyof typeof FoundationType) => {
+    switch (type) {
+      case "PLATE":
+        return {
+          thicknesTitle: "두께(T/mm)",
+          sizeTitle: "사이즈(mm)",
+          thicknes: "두께",
+          width: "가로",
+          height: "세로",
+        }
+      case "SCANTLING":
+        return {
+          thicknesTitle: "높이(mm)",
+          sizeTitle: "사이즈(mm)",
+          thicknes: "높이",
+          width: "가로",
+          height: "세로",
+        }
+      case "SEWING":
+        return {
+          thicknesTitle: undefined,
+          sizeTitle: "직경 X 길이 (mm)",
+          thicknes: undefined,
+          width: "직경",
+          height: "길이",
+        }
+    }
+  }, [])
+
+  const currentType = watch("foundationType") as keyof typeof FoundationType;
 
   return (
     <Layout>
@@ -192,31 +239,34 @@ const BrassPage = () => {
           </FoundationTypeContainer>
         </FoundationTypeArea>
         <OptionArea>
+          {optionTitleObj(currentType)?.thicknesTitle && (
+            <div>
+              <FormLabel>{optionTitleObj(currentType)?.thicknesTitle}</FormLabel>
+              <OptionRow>
+                <SizeWrapper>
+                  <DropdownV2
+                    width="100%"
+                    dropdownSize={"lg"}
+                    optionContainerWidth="100%"
+                    scrollMaxHeight="185px"
+                    options={foundationThicknesOptions()}
+                    placeholder={`${optionTitleObj(currentType).thicknes} 선택`}
+                    {...getSimpleProps({
+                      key: "thickness",
+                      setValue,
+                      watch,
+                      errors,
+                    })}
+                    hintText={`${optionTitleObj(currentType).thicknes}를 선택해주세요`}
+                  />
+                </SizeWrapper>
+                <BetweenText></BetweenText>
+                <SizeWrapper />
+              </OptionRow>
+            </div>
+          )}
           <div>
-            <FormLabel>두께(T/mm)</FormLabel>
-            <OptionRow>
-              <SizeWrapper>
-                <DropdownV2
-                  width="100%"
-                  dropdownSize={"lg"}
-                  optionContainerWidth="100%"
-                  scrollMaxHeight="185px"
-                  options={foundationThicknesOptions()}
-                  placeholder="두께 사이즈 선택"
-                  {...getSimpleProps({
-                    key: "thickness",
-                    setValue,
-                    watch,
-                    errors,
-                  })}
-                />
-              </SizeWrapper>
-              <BetweenText></BetweenText>
-              <SizeWrapper />
-            </OptionRow>
-          </div>
-          <div>
-            <FormLabel>사이즈(mm)</FormLabel>
+            <FormLabel>{optionTitleObj(currentType).sizeTitle}</FormLabel>
             <OptionRow>
               <DropdownV2
                 width="100%"
@@ -224,8 +274,9 @@ const BrassPage = () => {
                 optionContainerWidth="100%"
                 scrollMaxHeight="185px"
                 options={foundationWidthOptions()}
-                placeholder="가로 사이즈 선택"
+                placeholder={`${optionTitleObj(currentType).width} 사이즈 선택`}
                 {...getSimpleProps({ key: "width", setValue, watch, errors })}
+                hintText={`${optionTitleObj(currentType).width}를 선택해주세요`}
               />
               <BetweenText>X</BetweenText>
               <DropdownV2
@@ -234,8 +285,9 @@ const BrassPage = () => {
                 optionContainerWidth="100%"
                 scrollMaxHeight="185px"
                 options={foundationHeightOptions()}
-                placeholder="세로 사이즈 선택"
+                placeholder={`${optionTitleObj(currentType).height} 사이즈 선택`}
                 {...getSimpleProps({ key: "height", setValue, watch, errors })}
+                hintText={`${optionTitleObj(currentType).height}를 선택해주세요`}
               />
             </OptionRow>
           </div>
@@ -491,7 +543,7 @@ const QuantityOptionItem = styled.div<{ isActive: boolean }>`
   `}
 `;
 
-const QuantityDropDown = styled(DropdownV2)<{ isActive: boolean }>`
+const QuantityDropDown = styled(DropdownV2) <{ isActive: boolean }>`
   ${({ isActive }) =>
     isActive &&
     `
