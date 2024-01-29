@@ -34,5 +34,14 @@
   },
   "peacock.color": "#ffffff",
   "prettier.withNodeModules": true,
-  "stylelint.validate": ["css", "typescriptreact"]
+  "stylelint.validate": [
+    "css",
+    "typescriptreact"
+  ],
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "vscode.typescript-language-features"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "vscode.typescript-language-features"
+  }
 }
