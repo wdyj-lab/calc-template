@@ -12,15 +12,14 @@ import {
     priceList,
     thicknesOptions,
     widthOptions,
-} from "./AluminumPlate";
+} from "../../company/ntrex/AluminumPlate";
 
 import {
     heightOptions as scantlingHeightOptions,
     priceList as scantlingPriceList,
     thicknesOptions as scantlingThicknesOptions,
     widthOptions as scantlingWidthOptions,
-} from "./AluminumScantling";
-import ButtonV2 from "@/components/ButtonV2";
+} from "../../company/ntrex/AluminumScantling";
 
 enum FoundationType {
     PLATE = "판재",
