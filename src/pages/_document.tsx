@@ -15,8 +15,8 @@ class NextExample extends Document {
           <link
             rel="stylesheet"
             as="style"
-            href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.6/dist/web/static/pretendard.css"
-          />
+            href="https://cdn.rawgit.com/innks/NanumSquareRound/master/nanumsquareround.min.css"
+          ></link>
         </Head>
         <body>
           <Main />

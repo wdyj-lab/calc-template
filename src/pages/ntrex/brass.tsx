@@ -35,8 +35,8 @@ const BrassPage = () => {
       .oneOf(Object.keys(FoundationType))
       .required("재단 종류를 선택해주세요."),
     thickness: yup.string().required("두께를 선택해주세요."),
-    width: yup.string().required("가로를 입력해주세요."),
-    height: yup.string().required("세로를 입력해주세요."),
+    width: yup.string().required("가로를 선택해주세요."),
+    height: yup.string().required("세로를 선택해주세요."),
     quantity: yup.number().typeError("").required("수량을 입력해주세요."),
   });
 
@@ -138,7 +138,7 @@ const BrassPage = () => {
   return (
     <Layout>
       <Wrapper>
-        <FormLabel>재단 종류</FormLabel>
+        <FormLabel>원하시는 재단종류를 선택해주세요.</FormLabel>
         <FoundationTypeArea>
           <FoundationTypeContainer>
             <FoundationTypeImageBox
@@ -152,7 +152,9 @@ const BrassPage = () => {
                 objectFit={"contain"}
               />
             </FoundationTypeImageBox>
-            <FoundationTypeName>판재</FoundationTypeName>
+            <FoundationTypeName isActive={watch("foundationType") === "PLATE"}>
+              판재
+            </FoundationTypeName>
           </FoundationTypeContainer>
           <FoundationTypeContainer>
             <FoundationTypeImageBox
@@ -166,7 +168,11 @@ const BrassPage = () => {
                 objectFit={"contain"}
               />
             </FoundationTypeImageBox>
-            <FoundationTypeName>각재</FoundationTypeName>
+            <FoundationTypeName
+              isActive={watch("foundationType") === "SCANTLING"}
+            >
+              각재
+            </FoundationTypeName>
           </FoundationTypeContainer>
           <FoundationTypeContainer>
             <FoundationTypeImageBox
@@ -180,27 +186,33 @@ const BrassPage = () => {
                 objectFit={"contain"}
               />
             </FoundationTypeImageBox>
-            <FoundationTypeName>봉재</FoundationTypeName>
+            <FoundationTypeName isActive={watch("foundationType") === "SEWING"}>
+              봉재
+            </FoundationTypeName>
           </FoundationTypeContainer>
         </FoundationTypeArea>
         <OptionArea>
           <div>
             <FormLabel>두께(T/mm)</FormLabel>
             <OptionRow>
-              <DropdownV2
-                width="100%"
-                dropdownSize={"lg"}
-                optionContainerWidth="100%"
-                scrollMaxHeight="185px"
-                options={foundationThicknesOptions()}
-                placeholder="두께 사이즈 입력"
-                {...getSimpleProps({
-                  key: "thickness",
-                  setValue,
-                  watch,
-                  errors,
-                })}
-              />
+              <SizeWrapper>
+                <DropdownV2
+                  width="100%"
+                  dropdownSize={"lg"}
+                  optionContainerWidth="100%"
+                  scrollMaxHeight="185px"
+                  options={foundationThicknesOptions()}
+                  placeholder="두께 사이즈 선택"
+                  {...getSimpleProps({
+                    key: "thickness",
+                    setValue,
+                    watch,
+                    errors,
+                  })}
+                />
+              </SizeWrapper>
+              <BetweenText></BetweenText>
+              <SizeWrapper />
             </OptionRow>
           </div>
           <div>
@@ -212,7 +224,7 @@ const BrassPage = () => {
                 optionContainerWidth="100%"
                 scrollMaxHeight="185px"
                 options={foundationWidthOptions()}
-                placeholder="가로 사이즈 입력"
+                placeholder="가로 사이즈 선택"
                 {...getSimpleProps({ key: "width", setValue, watch, errors })}
               />
               <BetweenText>X</BetweenText>
@@ -222,7 +234,7 @@ const BrassPage = () => {
                 optionContainerWidth="100%"
                 scrollMaxHeight="185px"
                 options={foundationHeightOptions()}
-                placeholder="세로 사이즈 입력"
+                placeholder="세로 사이즈 선택"
                 {...getSimpleProps({ key: "height", setValue, watch, errors })}
               />
             </OptionRow>
@@ -330,6 +342,29 @@ export default BrassPage;
 const Layout = styled.div`
   width: 100%;
   max-width: 1000px;
+
+  > *,
+  input,
+  label,
+  button,
+  div,
+  span,
+  textarea,
+  select {
+    font-family: "NanumSquareRound", sans-serif;
+  }
+
+  @font-face {
+    font-family: "NanumSquareRound";
+    font-weight: 400;
+    src: url("/fonts/NanumSquareRoundR.ttf") format("truetype");
+  }
+
+  @font-face {
+    font-family: "NanumSquareRound";
+    font-weight: 800;
+    src: url("/fonts/NanumSquareRoundB.ttf") format("truetype");
+  }
 `;
 
 const Wrapper = styled.div`
@@ -376,18 +411,24 @@ const FoundationTypeImageBox = styled.div<{ isActive: boolean }>`
   }
 `;
 
-const FoundationTypeName = styled.div`
-  font-size: 1.3rem;
+const FoundationTypeName = styled.div<{ isActive: boolean }>`
+  font-size: 1.4rem;
   letter-spacing: 0.08em;
-  font-weight: 500;
+  font-weight: 600;
   text-align: center;
+
+  ${({ isActive }) => isActive && "color: #586fe2;"}
 `;
 
 const FormLabel = styled.div`
   width: 100%;
   font-size: 1.5rem;
-  font-weight: bold;
+  font-weight: 600;
   margin-bottom: 15px;
+
+  @media (max-width: 550px) {
+    font-size: 1.3rem;
+  }
 `;
 
 const OptionArea = styled.div`
@@ -395,6 +436,8 @@ const OptionArea = styled.div`
   display: flex;
   flex-direction: column;
   gap: 40px;
+  border-top: 2px solid #e5e5e5;
+  padding-top: 30px;
 `;
 
 const OptionRow = styled.div`
@@ -404,7 +447,7 @@ const OptionRow = styled.div`
 
 const BetweenText = styled.div`
   display: flex;
-  width: 100px;
+  width: 120px;
   height: 100%;
   align-items: center;
   justify-content: center;
@@ -625,8 +668,7 @@ const SmartStoreDescriptionMaxPrice = styled.div`
   }
 `;
 
-const ButtonWrapper = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+const SizeWrapper = styled.div`
+  width: 100%;
+  max-width: 456px;
 `;
