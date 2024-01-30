@@ -3,7 +3,7 @@ import TextInputV2 from "@/components/TextInputV2";
 import getSimpleProps from "@/lib/utils/getSimpleProps";
 import { yupResolver } from "@hookform/resolvers/yup";
 import Image from "next/image";
-import { useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import styled from "styled-components";
 import * as yup from "yup";
@@ -21,6 +21,12 @@ import {
     widthOptions as scantlingWidthOptions,
 } from "../../company/ntrex/AluminumScantling";
 
+import {
+    heightOptions as sewingHeightOptions,
+    priceList as sewingPriceList,
+    widthOptions as sewingWidthOptions,
+} from "../../company/ntrex/AluminumSewing";
+
 enum FoundationType {
     PLATE = "판재",
     SCANTLING = "각재",
@@ -34,16 +40,20 @@ const AluminumPage = () => {
             .mixed()
             .oneOf(Object.keys(FoundationType))
             .required("재단 종류를 선택해주세요."),
-        thickness: yup.string().required("두께를 선택해주세요."),
-        width: yup.string().required("가로를 입력해주세요."),
-        height: yup.string().required("세로를 입력해주세요."),
+        thickness: yup.string()
+            .when("foundationType", {
+                is: (type: keyof typeof FoundationType) => type === "PLATE" || type === "SCANTLING",
+                then: (schema: any) => schema.required("두께를 선택해주세요.")
+            }),
+        width: yup.string().required("가로를 선택해주세요."),
+        height: yup.string().required("세로를 선택해주세요."),
         quantity: yup.number().typeError("").required("수량을 입력해주세요."),
     });
 
     const {
         watch,
         setValue,
-        reset,
+        trigger,
         formState: { errors, isValid },
     } = useForm({
         mode: "onChange",
@@ -62,6 +72,7 @@ const AluminumPage = () => {
         setValue("height", "");
         setValue("quantity", 1);
         setDirect(false);
+        trigger();
     };
 
     const handleQuantityClick = (quantity: number) => {
@@ -100,6 +111,8 @@ const AluminumPage = () => {
                 return widthOptions;
             case "SCANTLING":
                 return scantlingWidthOptions;
+            case "SEWING":
+                return sewingWidthOptions;
             default:
                 return [];
         }
@@ -111,6 +124,8 @@ const AluminumPage = () => {
                 return heightOptions;
             case "SCANTLING":
                 return scantlingHeightOptions;
+            case "SEWING":
+                return sewingHeightOptions;
             default:
                 return [];
         }
@@ -122,6 +137,8 @@ const AluminumPage = () => {
                 return priceList;
             case "SCANTLING":
                 return scantlingPriceList;
+            case "SEWING":
+                return sewingPriceList;
             default:
                 return [];
         }
@@ -134,10 +151,41 @@ const AluminumPage = () => {
 
     const resultResultPrice = isNaN(resultPrice) ? 0 : resultPrice;
 
+    const optionTitleObj = useCallback((type: keyof typeof FoundationType) => {
+        switch (type) {
+            case "PLATE":
+                return {
+                    thicknesTitle: "두께(T/mm)",
+                    sizeTitle: "사이즈(mm)",
+                    thicknes: "두께",
+                    width: "가로",
+                    height: "세로",
+                }
+            case "SCANTLING":
+                return {
+                    thicknesTitle: "높이(mm)",
+                    sizeTitle: "사이즈(mm)",
+                    thicknes: "높이",
+                    width: "가로",
+                    height: "세로",
+                }
+            case "SEWING":
+                return {
+                    thicknesTitle: undefined,
+                    sizeTitle: "직경 X 길이 (mm)",
+                    thicknes: undefined,
+                    width: "직경",
+                    height: "길이",
+                }
+        }
+    }, [])
+
+    const currentType = watch("foundationType") as keyof typeof FoundationType;
+
     return (
         <Layout>
             <Wrapper>
-                <FormLabel>재단 종류</FormLabel>
+                <FormLabel>원하시는 재단종류를 선택해주세요.</FormLabel>
                 <FoundationTypeArea>
                     <FoundationTypeContainer>
                         <FoundationTypeImageBox
@@ -146,12 +194,14 @@ const AluminumPage = () => {
                         >
                             <Image
                                 src={"/assets/ntrex/알루미늄 판재.jpg"}
-                                alt={"알루미늄 판재"}
+                                alt={"황동 판재"}
                                 layout={"fill"}
                                 objectFit={"contain"}
                             />
                         </FoundationTypeImageBox>
-                        <FoundationTypeName>판재</FoundationTypeName>
+                        <FoundationTypeName isActive={watch("foundationType") === "PLATE"}>
+                            판재
+                        </FoundationTypeName>
                     </FoundationTypeContainer>
                     <FoundationTypeContainer>
                         <FoundationTypeImageBox
@@ -160,12 +210,16 @@ const AluminumPage = () => {
                         >
                             <Image
                                 src={"/assets/ntrex/알루미늄 각재.jpg"}
-                                alt={"알루미늄 각재"}
+                                alt={"황동 각재"}
                                 layout={"fill"}
                                 objectFit={"contain"}
                             />
                         </FoundationTypeImageBox>
-                        <FoundationTypeName>각재</FoundationTypeName>
+                        <FoundationTypeName
+                            isActive={watch("foundationType") === "SCANTLING"}
+                        >
+                            각재
+                        </FoundationTypeName>
                     </FoundationTypeContainer>
                     <FoundationTypeContainer>
                         <FoundationTypeImageBox
@@ -174,36 +228,45 @@ const AluminumPage = () => {
                         >
                             <Image
                                 src={"/assets/ntrex/알루미늄 봉재.jpg"}
-                                alt={"알루미늄 봉재"}
+                                alt={"황동 봉재"}
                                 layout={"fill"}
                                 objectFit={"contain"}
                             />
                         </FoundationTypeImageBox>
-                        <FoundationTypeName>봉재</FoundationTypeName>
+                        <FoundationTypeName isActive={watch("foundationType") === "SEWING"}>
+                            봉재
+                        </FoundationTypeName>
                     </FoundationTypeContainer>
                 </FoundationTypeArea>
                 <OptionArea>
+                    {optionTitleObj(currentType)?.thicknesTitle && (
+                        <div>
+                            <FormLabel>{optionTitleObj(currentType)?.thicknesTitle}</FormLabel>
+                            <OptionRow>
+                                <SizeWrapper>
+                                    <DropdownV2
+                                        width="100%"
+                                        dropdownSize={"lg"}
+                                        optionContainerWidth="100%"
+                                        scrollMaxHeight="185px"
+                                        options={foundationThicknesOptions()}
+                                        placeholder={`${optionTitleObj(currentType).thicknes} 선택`}
+                                        {...getSimpleProps({
+                                            key: "thickness",
+                                            setValue,
+                                            watch,
+                                            errors,
+                                        })}
+                                        hintText={`${optionTitleObj(currentType).thicknes}를 선택해주세요`}
+                                    />
+                                </SizeWrapper>
+                                <BetweenText></BetweenText>
+                                <SizeWrapper />
+                            </OptionRow>
+                        </div>
+                    )}
                     <div>
-                        <FormLabel>두께(T/mm)</FormLabel>
-                        <OptionRow>
-                            <DropdownV2
-                                width="100%"
-                                dropdownSize={"lg"}
-                                optionContainerWidth="100%"
-                                scrollMaxHeight="185px"
-                                options={foundationThicknesOptions()}
-                                placeholder="두께 사이즈 입력"
-                                {...getSimpleProps({
-                                    key: "thickness",
-                                    setValue,
-                                    watch,
-                                    errors,
-                                })}
-                            />
-                        </OptionRow>
-                    </div>
-                    <div>
-                        <FormLabel>사이즈(mm)</FormLabel>
+                        <FormLabel>{optionTitleObj(currentType).sizeTitle}</FormLabel>
                         <OptionRow>
                             <DropdownV2
                                 width="100%"
@@ -211,8 +274,9 @@ const AluminumPage = () => {
                                 optionContainerWidth="100%"
                                 scrollMaxHeight="185px"
                                 options={foundationWidthOptions()}
-                                placeholder="가로 사이즈 입력"
+                                placeholder={`${optionTitleObj(currentType).width} 사이즈 선택`}
                                 {...getSimpleProps({ key: "width", setValue, watch, errors })}
+                                hintText={`${optionTitleObj(currentType).width}를 선택해주세요`}
                             />
                             <BetweenText>X</BetweenText>
                             <DropdownV2
@@ -221,8 +285,9 @@ const AluminumPage = () => {
                                 optionContainerWidth="100%"
                                 scrollMaxHeight="185px"
                                 options={foundationHeightOptions()}
-                                placeholder="세로 사이즈 입력"
+                                placeholder={`${optionTitleObj(currentType).height} 사이즈 선택`}
                                 {...getSimpleProps({ key: "height", setValue, watch, errors })}
+                                hintText={`${optionTitleObj(currentType).height}를 선택해주세요`}
                             />
                         </OptionRow>
                     </div>
@@ -329,6 +394,29 @@ export default AluminumPage;
 const Layout = styled.div`
   width: 100%;
   max-width: 1000px;
+
+  > *,
+  input,
+  label,
+  button,
+  div,
+  span,
+  textarea,
+  select {
+    font-family: "NanumSquareRound", sans-serif;
+  }
+
+  @font-face {
+    font-family: "NanumSquareRound";
+    font-weight: 400;
+    src: url("/fonts/NanumSquareRoundR.ttf") format("truetype");
+  }
+
+  @font-face {
+    font-family: "NanumSquareRound";
+    font-weight: 800;
+    src: url("/fonts/NanumSquareRoundB.ttf") format("truetype");
+  }
 `;
 
 const Wrapper = styled.div`
@@ -375,18 +463,24 @@ const FoundationTypeImageBox = styled.div<{ isActive: boolean }>`
   }
 `;
 
-const FoundationTypeName = styled.div`
-  font-size: 1.3rem;
+const FoundationTypeName = styled.div<{ isActive: boolean }>`
+  font-size: 1.4rem;
   letter-spacing: 0.08em;
-  font-weight: 500;
+  font-weight: 600;
   text-align: center;
+
+  ${({ isActive }) => isActive && "color: #586fe2;"}
 `;
 
 const FormLabel = styled.div`
   width: 100%;
   font-size: 1.5rem;
-  font-weight: bold;
+  font-weight: 600;
   margin-bottom: 15px;
+
+  @media (max-width: 550px) {
+    font-size: 1.3rem;
+  }
 `;
 
 const OptionArea = styled.div`
@@ -394,6 +488,8 @@ const OptionArea = styled.div`
   display: flex;
   flex-direction: column;
   gap: 40px;
+  border-top: 2px solid #e5e5e5;
+  padding-top: 30px;
 `;
 
 const OptionRow = styled.div`
@@ -403,7 +499,7 @@ const OptionRow = styled.div`
 
 const BetweenText = styled.div`
   display: flex;
-  width: 100px;
+  width: 120px;
   height: 100%;
   align-items: center;
   justify-content: center;
@@ -624,8 +720,7 @@ const SmartStoreDescriptionMaxPrice = styled.div`
   }
 `;
 
-const ButtonWrapper = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+const SizeWrapper = styled.div`
+  width: 100%;
+  max-width: 456px;
 `;
