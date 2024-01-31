@@ -12,4 +12,9 @@ export const GlobalStyle = createGlobalStyle`
   #root {
     height: 100%;
   }
+
+  .scroll-locked {
+    overflow: hidden;
+    touch-action: none;
+  }
 `;
