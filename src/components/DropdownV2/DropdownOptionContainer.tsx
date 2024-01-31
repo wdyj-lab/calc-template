@@ -241,7 +241,7 @@ const StyledScrollbar = styled(PerfectScrollbar) <{
   }
 
   @media ${generateMediaQuery("<", "md")} {
-    overflow: auto;
+    overflow: scroll;
   }
 
 `;
