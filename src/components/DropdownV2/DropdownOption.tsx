@@ -141,7 +141,7 @@ const StyledDiv = styled.div<{
   &:hover,
   &:focus-visible {
     background-color: ${(props) =>
-      Color(props.theme.palette.core.BasePrimary).alpha(0.05).toString()};
+    Color(props.theme.palette.core.BasePrimary).alpha(0.05).toString()};
   }
 
   ${({ selected, theme }) =>
@@ -154,7 +154,7 @@ const StyledDiv = styled.div<{
       opacity: 1;
       &:hover {
         background-color: ${(props) =>
-          Color(props.theme.palette.core.BasePrimary).alpha(0.1).toString()};
+        Color(props.theme.palette.core.BasePrimary).alpha(0.1).toString()};
       }
     `}
 
@@ -170,7 +170,7 @@ const StyledDiv = styled.div<{
 
     &::before {
       content: ${(props) =>
-        props.dropdownType === "checkbox" ? "normal" : '""'};
+    props.dropdownType === "checkbox" ? "normal" : '""'};
       display: inline-block;
       flex-shrink: 0;
       margin-left: 1.5px;
@@ -180,15 +180,15 @@ const StyledDiv = styled.div<{
       border: 3.5px solid
         ${(props) => props.theme.palette.core.BackgroundPrimary};
       background-color: ${(props) =>
-        props.theme.palette.core.BackgroundPrimary};
+    props.theme.palette.core.BackgroundPrimary};
       box-shadow: 0 0 1.5px 1.5px
         ${(props) => props.theme.palette.core.Borders200};
       border-radius: 17px;
     }
 
     ${({ selected }) =>
-      selected &&
-      css`
+    selected &&
+    css`
         background-color: transparent;
         ${foundations.typography.Body1};
 

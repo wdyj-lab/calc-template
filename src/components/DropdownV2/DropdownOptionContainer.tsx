@@ -239,6 +239,8 @@ const StyledScrollbar = styled(PerfectScrollbar) <{
   .dropdown-option:first-child {
     margin-top: 8px;
   }
+
+  overflow: auto;
 `;
 
 const OptionContainer = styled.div<{
