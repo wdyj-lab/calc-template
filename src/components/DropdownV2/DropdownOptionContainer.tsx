@@ -240,7 +240,10 @@ const StyledScrollbar = styled(PerfectScrollbar) <{
     margin-top: 8px;
   }
 
-  overflow: auto;
+  @media ${generateMediaQuery("<", "md")} {
+    overflow: auto;
+  }
+
 `;
 
 const OptionContainer = styled.div<{
