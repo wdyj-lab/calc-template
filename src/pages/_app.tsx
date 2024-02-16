@@ -1,7 +1,7 @@
 import BaseTheme from "@/themes/BaseTheme";
 import type { AppProps } from "next/app";
-import { ThemeProvider } from "styled-components";
 import localFont from "next/font/local";
+import { ThemeProvider } from "styled-components";
 
 const nanumRound = localFont({
   src: [
@@ -29,6 +29,8 @@ const nanumRound = localFont({
 });
 
 export default function App({ Component, pageProps }: AppProps) {
+
+
   return (
     <ThemeProvider theme={BaseTheme}>
       <main className={nanumRound.className}>

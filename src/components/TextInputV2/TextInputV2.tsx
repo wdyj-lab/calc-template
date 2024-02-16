@@ -219,6 +219,8 @@ const InputWrapper = styled.div<{
   justify-content: flex-start;
   border: 1px solid ${({ theme }) => theme.palette.core.Borders200};
   background-color: ${({ theme }) => theme.palette.core.BackgroundPrimary};
+  padding: 0 5px;
+  box-sizing: border-box;
 
   &:focus-within {
     border: 2px solid ${({ theme }) => theme.palette.core.BasePrimary};
