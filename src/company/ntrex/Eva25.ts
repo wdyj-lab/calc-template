@@ -13,8 +13,8 @@ const thicknesOptions = [
     { key: "30T", label: "30T", value: 30 },
     { key: "35T", label: "35T", value: 35 },
     { key: "40T", label: "40T", value: 40 },
-    { key: "45T", label: "45T", value: 45 },
-    { key: "50T", label: "50T", value: 50 }
+    // { key: "45T", label: "45T", value: 45 },
+    // { key: "50T", label: "50T", value: 50 }
 ]
 
 const widthOptions = [
