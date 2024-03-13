@@ -34,7 +34,7 @@ const ContactPage = () => {
     reValidateMode: "onChange",
     resolver: yupResolver(formResolver),
     defaultValues: {
-      content: "1. 재단종류 : \n2. 가로x세로x두께(mm) : \n3. 수량 :",
+      content: "1. 재질(알루미늄 or 황동) : \n2. 재단종류 : \n3. 가로x세로x두께(mm) : \n4. 수량 :",
     }
   })
 
