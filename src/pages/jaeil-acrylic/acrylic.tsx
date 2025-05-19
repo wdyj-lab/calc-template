@@ -57,7 +57,7 @@ const AcrylicCalcPage = () => {
     { key: "none", value: "none", label: "색상" },
     { key: "transparency", value: "transparency", label: "투명" },
     { key: "white", value: "white", label: "백색(반투명)" },
-    { key: "white2", value: "white", label: "백색(불투명)" },
+    { key: "white2", value: "white2", label: "백색(불투명)" },
     {
       key: "black-transparency",
       value: "black-transparency",
