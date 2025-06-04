@@ -185,31 +185,49 @@ function calculatePrice(
 
   if (type === "MagneticFine") {
     const w = Math.ceil(width / 10) * 10;
-    const h = (Math.ceil(height / 10) * 10) / 10;
+    const h = Math.ceil(height / 10) * 10;
+    const widthUnitPrice = magenticFineUnitPrice[w] || 0;
+    const heightUnitPrice = magenticFineUnitPrice[h] || 0;
 
-    const unitPrice = magenticFineUnitPrice[w] || 0;
-
-    return Math.ceil((unitPrice * h) / 1000) * 1000;
+    const widthPrice = Math.ceil((widthUnitPrice * (h / 10)) / 1000) * 1000;
+    const heightPrice = Math.ceil((heightUnitPrice * (w / 10)) / 1000) * 1000;
+    return Math.max(widthPrice, heightPrice);
   } else if (type === "MagneticFineDense") {
     const w = Math.ceil(width / 10) * 10;
-    const h = (Math.ceil(height / 10) * 10) / 10;
-    const unitPrice = magneticFineDensePrice[w] || 0;
-    return Math.ceil((unitPrice * h) / 1000) * 1000;
+    const h = Math.ceil(height / 10) * 10;
+    const widthUnitPrice = magneticFineDensePrice[w] || 0;
+    const heightUnitPrice = magneticFineDensePrice[h] || 0;
+
+    const widthPrice = Math.ceil((widthUnitPrice * (h / 10)) / 1000) * 1000;
+    const heightPrice = Math.ceil((heightUnitPrice * (w / 10)) / 1000) * 1000;
+    return Math.max(widthPrice, heightPrice);
   } else if (type === "VelcroFine") {
     const w = Math.ceil(width / 10) * 10;
-    const h = (Math.ceil(height / 10) * 10) / 10;
-    const unitPrice = velcroFinePrice[w] || 0;
-    return Math.ceil((unitPrice * h) / 1000) * 1000;
+    const h = Math.ceil(height / 10) * 10;
+    const widthUnitPrice = velcroFinePrice[w] || 0;
+    const heightUnitPrice = velcroFinePrice[h] || 0;
+
+    const widthPrice = Math.ceil((widthUnitPrice * (h / 10)) / 1000) * 1000;
+    const heightPrice = Math.ceil((heightUnitPrice * (w / 10)) / 1000) * 1000;
+    return Math.max(widthPrice, heightPrice);
   } else if (type === "VelcroFineDense") {
     const w = Math.ceil(width / 10) * 10;
-    const h = (Math.ceil(height / 10) * 10) / 10;
-    const unitPrice = velcroFineDensePrice[w] || 0;
-    return Math.ceil((unitPrice * h) / 1000) * 1000;
+    const h = Math.ceil(height / 10) * 10;
+    const widthUnitPrice = velcroFineDensePrice[w] || 0;
+    const heightUnitPrice = velcroFineDensePrice[h] || 0;
+
+    const widthPrice = Math.ceil((widthUnitPrice * (h / 10)) / 1000) * 1000;
+    const heightPrice = Math.ceil((heightUnitPrice * (w / 10)) / 1000) * 1000;
+    return Math.max(widthPrice, heightPrice);
   } else if (type === "VelcroDustproof") {
     const w = Math.ceil(width / 10) * 10;
-    const h = (Math.ceil(height / 10) * 10) / 10;
-    const unitPrice = velcroDustproofPrice[w] || 0;
-    return Math.ceil((unitPrice * h) / 1000) * 1000;
+    const h = Math.ceil(height / 10) * 10;
+    const widthUnitPrice = velcroDustproofPrice[w] || 0;
+    const heightUnitPrice = velcroDustproofPrice[h] || 0;
+
+    const widthPrice = Math.ceil((widthUnitPrice * (h / 10)) / 1000) * 1000;
+    const heightPrice = Math.ceil((heightUnitPrice * (w / 10)) / 1000) * 1000;
+    return Math.max(widthPrice, heightPrice);
   }
 
   return 0;
