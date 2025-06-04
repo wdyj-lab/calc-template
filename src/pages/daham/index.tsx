@@ -1,14 +1,13 @@
+import ButtonV2 from "@/components/ButtonV2";
 import TextInputV2 from "@/components/TextInputV2";
 import { Well, WellIcon } from "@/components/Well";
 import foundations from "@/foundations";
+import useWindowSize from "@/lib/hooks/useWindowSize";
 import getSimpleProps from "@/lib/utils/getSimpleProps";
+import { yupResolver } from "@hookform/resolvers/yup";
 import { FormProvider, useForm, useFormContext } from "react-hook-form";
 import { styled } from "styled-components";
-import Image from "next/image";
 import * as yup from "yup";
-import { yupResolver } from "@hookform/resolvers/yup";
-import useWindowSize from "@/lib/hooks/useWindowSize";
-import ButtonV2 from "@/components/ButtonV2";
 
 enum MeshScreenType {
   MagneticFine = "자석 방충망 (미세망)",
@@ -135,7 +134,6 @@ const velcroFineDensePrice: { [key: number]: number } = {
   150: 1980,
   160: 2200,
   170: 2280,
-
   180: 2540,
   190: 2720,
   200: 2880,
@@ -458,7 +456,10 @@ function CalcResultContainer() {
               size="lg"
               style={{ marginTop: "20px" }}
               onClick={() =>
-                window.open("https://smartstore.naver.com/gen-aqua", "_blank")
+                window.open(
+                  "https://smartstore.naver.com/gen-aqua/products/10282982921",
+                  "_blank"
+                )
               }
             >
               구매하기
