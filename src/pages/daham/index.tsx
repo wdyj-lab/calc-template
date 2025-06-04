@@ -375,28 +375,6 @@ function CalcResultContainer() {
       <CalcResultRow>
         <ResultValueBox>
           <LabelOption>
-            <label>가로</label>
-            <TextInputV2
-              width="100%"
-              size="lg"
-              unit="cm"
-              textAlignment="center"
-              maxLength={12}
-              value={watch("width") ?? 0}
-            />
-          </LabelOption>
-          <LabelOption>
-            <label>세로</label>
-            <TextInputV2
-              width="100%"
-              size="lg"
-              unit="cm"
-              textAlignment="center"
-              maxLength={12}
-              value={watch("height") ?? 0}
-            />
-          </LabelOption>
-          <LabelOption>
             <label>종류</label>
             <TextInputV2
               width="100%"
@@ -425,6 +403,28 @@ function CalcResultContainer() {
                   watch("height")
                 ) || 0
               ).toLocaleString()}
+            />
+          </LabelOption>
+          <LabelOption>
+            <label>가로</label>
+            <TextInputV2
+              width="100%"
+              size="lg"
+              unit="cm"
+              textAlignment="center"
+              maxLength={12}
+              value={watch("width") ?? 0}
+            />
+          </LabelOption>
+          <LabelOption>
+            <label>세로</label>
+            <TextInputV2
+              width="100%"
+              size="lg"
+              unit="cm"
+              textAlignment="center"
+              maxLength={12}
+              value={watch("height") ?? 0}
             />
           </LabelOption>
         </ResultValueBox>
