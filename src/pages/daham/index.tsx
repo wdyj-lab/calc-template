@@ -8,6 +8,7 @@ import Image from "next/image";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import useWindowSize from "@/lib/hooks/useWindowSize";
+import ButtonV2 from "@/components/ButtonV2";
 
 enum MeshScreenType {
   MagneticFine = "자석 방충망 (미세망)",
@@ -328,8 +329,8 @@ function SizeContainer() {
       <SectionTitle>2. 방충망 사이즈를 입력해주세요.</SectionTitle>
       <SizeTooltip>
         <WellIcon name="INFO_OUTLINE" inline />
-        방충망 사이즈는 가로, 세로 10cm 단위로 판매됩니다.{" "}
-        <b>(예: 16cm X 12cm 인 경우 20cm X 10cm 2개 구매)</b>
+        가로 세로를 입력 <br />
+        종류 및 사이즈별 가격 확인 후 1,000원 옵션으로 금액만큼 주문하세요.
       </SizeTooltip>
       <SizeWrapper>
         <LabelOption>
@@ -435,44 +436,33 @@ function CalcResultContainer() {
           watch("height")
         ) || 0) > 0 && (
           <ResultImageBox>
-            <SmartStoreDescriptionImageBox>
-              <SmartStoreDescriptionQuantity>
+            <h2>
+              구매 수량{" : "}
+              <NumberBox>
                 {Math.ceil(
                   (calculatePrice(
                     watch("meshScreenType"),
                     watch("width"),
                     watch("height")
                   ) || 0) / 1000
-                )}
-              </SmartStoreDescriptionQuantity>
-              <SmartStoreDescriptionMaxQuantity>
-                총 수량{" "}
-                {Math.ceil(
-                  (calculatePrice(
-                    watch("meshScreenType"),
-                    watch("width"),
-                    watch("height")
-                  ) || 0) / 1000
-                ).toLocaleString()}
-                개
-              </SmartStoreDescriptionMaxQuantity>
-              <SmartStoreDescriptionMaxPrice>
-                {(
-                  calculatePrice(
-                    watch("meshScreenType"),
-                    watch("width"),
-                    watch("height")
-                  ) || 0
-                ).toLocaleString()}
-                원
-              </SmartStoreDescriptionMaxPrice>
-              <Image
-                src={"/assets/ntrex/store_result.png"}
-                alt={"result"}
-                layout={"fill"}
-                objectFit={"contain"}
-              />
-            </SmartStoreDescriptionImageBox>
+                ).toLocaleString()}{" "}
+              </NumberBox>
+              개
+            </h2>
+            <br />
+            <h2>구매 수량을 확인 후 구매하기 버튼을 눌러주세요.</h2>
+
+            <ButtonV2
+              status="primary"
+              minWidth="100%"
+              size="lg"
+              style={{ marginTop: "20px" }}
+              onClick={() =>
+                window.open("https://smartstore.naver.com/gen-aqua", "_blank")
+              }
+            >
+              구매하기
+            </ButtonV2>
           </ResultImageBox>
         )}
       </CalcResultRow>
@@ -578,6 +568,7 @@ const SizeWrapper = styled.div`
 
   @media (max-width: 500px) {
     flex-direction: column;
+    gap: 20px;
   }
 `;
 
@@ -619,9 +610,10 @@ const SizeTooltip = styled(Well)`
 const CalcResultRow = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 40px;
 
   @media (max-width: 500px) {
+    gap: 20px;
   }
 `;
 
@@ -640,97 +632,23 @@ const ResultValueBox = styled.div`
 `;
 
 const ResultImageBox = styled.div`
-  flex: 1;
   width: 100%;
   display: flex;
-  align-items: center;
-  justify-content: center;
-`;
-
-const SmartStoreDescriptionImageBox = styled.div`
-  position: relative;
-  width: 500px;
-  height: 300px;
-
-  @media (max-width: 550px) {
-    width: 350px;
-    height: 180px;
-  }
-`;
-
-const SmartStoreDescriptionQuantity = styled.div`
-  position: absolute;
-  z-index: 1;
-
-  top: 27px;
-  left: 50px;
-
-  width: 50px;
-  height: 34px;
-  text-align: center;
-
-  border: 3px solid #d40022;
-
-  display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
 
-  @media (max-width: 550px) {
-    width: 32px;
-    height: 22px;
-
-    border: 2px solid #d40022;
-
-    top: 13px;
-    left: 50px;
-
-    font-size: 0.7rem;
+  > h2 {
+    margin: 0;
+    text-align: center;
+    line-height: 1.5;
   }
 `;
 
-const SmartStoreDescriptionMaxQuantity = styled.div`
-  position: absolute;
-  z-index: 1;
-
-  color: #999;
-
-  top: 116px;
-  right: 200px;
-
-  background-color: #fff;
-
-  width: 160px;
-  text-align: end;
-
-  @media (max-width: 550px) {
-    width: 130px;
-    height: 14px;
-
-    background-color: #fff;
-
-    top: 70px;
-    left: 85px;
-
-    font-size: 0.7rem;
-  }
-`;
-
-const SmartStoreDescriptionMaxPrice = styled.div`
-  position: absolute;
-  z-index: 1;
-
-  font-weight: 800;
-  font-size: 1.5rem;
-
-  color: #d40022;
-
-  top: 112px;
-  right: 18px;
-
-  @media (max-width: 550px) {
-    top: 68px;
-    right: 30px;
-
-    font-size: 1rem;
-  }
+const NumberBox = styled.div`
+  display: inline-block;
+  background-color: #ffffff;
+  padding: 0px 10px;
+  border: 1px solid #cccccc;
+  margin: 0 5px;
 `;
