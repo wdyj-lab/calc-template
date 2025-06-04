@@ -27,21 +27,13 @@
     "statusBarItem.remoteForeground": "#15202b",
     "commandCenter.border": "#15202b99"
   },
-  "editor.defaultFormatter": "esbenp.prettier-vscode",
-  "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": "explicit",
-    "source.fixAll.stylelint": "explicit"
-  },
   "peacock.color": "#ffffff",
   "prettier.withNodeModules": true,
-  "stylelint.validate": [
-    "css",
-    "typescriptreact"
-  ],
-  "[typescriptreact]": {
-    "editor.defaultFormatter": "vscode.typescript-language-features"
-  },
-  "[typescript]": {
-    "editor.defaultFormatter": "vscode.typescript-language-features"
+  "stylelint.validate": ["css", "typescriptreact"],
+  "editor.rulers": [120, 140, 160],
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.codeActionsOnSave": {
+    "source.formatDocument": "explicit",
+    "source.fixAll.eslint": "explicit"
   }
 }
