@@ -18,79 +18,79 @@ enum MeshScreenType {
 }
 
 const magenticFineUnitPrice: { [key: number]: number } = {
-  10: 2000,
-  20: 2000,
-  30: 2000,
-  40: 2000,
-  50: 2000,
-  60: 2000,
+  10: 1000,
+  20: 2200,
+  30: 2200,
+  40: 2200,
+  50: 2200,
+  60: 2200,
   70: 2200,
   80: 2200,
   90: 2200,
-  100: 2300,
-  110: 2500,
-  120: 2500,
-  130: 2500,
-  140: 2500,
-  150: 2500,
+  100: 2500,
+  110: 2600,
+  120: 2700,
+  130: 2800,
+  140: 2400,
+  150: 2400,
   160: 2600,
-  170: 2600,
-  180: 2600,
+  170: 2800,
+  180: 2900,
   190: 4000,
   200: 5000,
   210: 5200,
-  220: 5400,
-  230: 5600,
-  240: 5800,
-  250: 6000,
-  260: 6200,
-  270: 6400,
-  280: 6600,
-  290: 6800,
-  300: 7000,
+  220: 5600,
+  230: 5800,
+  240: 6200,
+  250: 6600,
+  260: 7000,
+  270: 7200,
+  280: 7400,
+  290: 7500,
+  300: 7600,
 };
 
 const magneticFineDensePrice: { [key: number]: number } = {
-  10: 2260,
-  20: 2260,
-  30: 2260,
-  40: 2260,
-  50: 2260,
-  60: 2260,
-  70: 2260,
-  80: 2260,
-  90: 2260,
-  100: 2380,
-  110: 2500,
-  120: 2500,
-  130: 2500,
-  140: 2500,
-  150: 2500,
-  160: 2740,
-  170: 2740,
-  180: 2740,
-  190: 4420,
-  200: 5620,
-  210: 5860,
-  220: 6100,
-  230: 6340,
-  240: 6580,
-  250: 6820,
-  260: 7060,
-  270: 7300,
-  280: 7540,
-  290: 7780,
-  300: 8020,
+  10: 2500,
+  20: 2800,
+  30: 2800,
+  40: 2800,
+  50: 2800,
+  60: 2800,
+  70: 2800,
+  80: 2800,
+  90: 2800,
+  100: 3100,
+  110: 3300,
+  120: 3400,
+  130: 3500,
+  140: 3000,
+  150: 3000,
+  160: 3300,
+  170: 3500,
+  180: 3600,
+  190: 5000,
+  200: 6300,
+  210: 6500,
+  220: 7000,
+  230: 7300,
+  240: 7800,
+  250: 8300,
+  260: 8800,
+  270: 9000,
+  280: 9300,
+  290: 9400,
+  300: 9500,
 };
 
 const velcroFinePrice: { [key: number]: number } = {
-  10: 740,
-  20: 740,
-  30: 740,
-  40: 740,
-  50: 770,
+  10: 780,
+  20: 780,
+  30: 780,
+  40: 780,
+  50: 780,
   60: 800,
-  70: 830,
+  70: 990,
   80: 950,
   90: 980,
   100: 1020,
@@ -150,6 +150,13 @@ const velcroFineDensePrice: { [key: number]: number } = {
 };
 
 const velcroDustproofPrice: { [key: number]: number } = {
+  10: 2220,
+  20: 2220,
+  30: 2220,
+  40: 2220,
+  50: 2220,
+  60: 2220,
+  70: 2220,
   80: 2220,
   90: 2400,
   100: 2600,
@@ -185,48 +192,53 @@ function calculatePrice(
   if (type === "MagneticFine") {
     const w = Math.ceil(width / 10) * 10;
     const h = Math.ceil(height / 10) * 10;
-    const widthUnitPrice = magenticFineUnitPrice[w] || 0;
-    const heightUnitPrice = magenticFineUnitPrice[h] || 0;
 
-    const widthPrice = Math.ceil((widthUnitPrice * (h / 10)) / 1000) * 1000;
-    const heightPrice = Math.ceil((heightUnitPrice * (w / 10)) / 1000) * 1000;
-    return Math.max(widthPrice, heightPrice);
+    const a = Math.min(w, h);
+    const b = Math.max(w, h);
+
+    const unitPrice = magenticFineUnitPrice[a] || 0;
+
+    return Math.ceil((unitPrice * Math.ceil(b / 10)) / 1000) * 1000;
   } else if (type === "MagneticFineDense") {
     const w = Math.ceil(width / 10) * 10;
     const h = Math.ceil(height / 10) * 10;
-    const widthUnitPrice = magneticFineDensePrice[w] || 0;
-    const heightUnitPrice = magneticFineDensePrice[h] || 0;
 
-    const widthPrice = Math.ceil((widthUnitPrice * (h / 10)) / 1000) * 1000;
-    const heightPrice = Math.ceil((heightUnitPrice * (w / 10)) / 1000) * 1000;
-    return Math.max(widthPrice, heightPrice);
+    const a = Math.min(w, h);
+    const b = Math.max(w, h);
+
+    const unitPrice = magneticFineDensePrice[a] || 0;
+
+    return Math.ceil((unitPrice * Math.ceil(b / 10)) / 1000) * 1000;
   } else if (type === "VelcroFine") {
     const w = Math.ceil(width / 10) * 10;
     const h = Math.ceil(height / 10) * 10;
-    const widthUnitPrice = velcroFinePrice[w] || 0;
-    const heightUnitPrice = velcroFinePrice[h] || 0;
 
-    const widthPrice = Math.ceil((widthUnitPrice * (h / 10)) / 1000) * 1000;
-    const heightPrice = Math.ceil((heightUnitPrice * (w / 10)) / 1000) * 1000;
-    return Math.max(widthPrice, heightPrice);
+    const a = Math.min(w, h);
+    const b = Math.max(w, h);
+
+    const unitPrice = velcroFinePrice[a] || 0;
+
+    return Math.ceil((unitPrice * Math.ceil(b / 10)) / 1000) * 1000;
   } else if (type === "VelcroFineDense") {
     const w = Math.ceil(width / 10) * 10;
     const h = Math.ceil(height / 10) * 10;
-    const widthUnitPrice = velcroFineDensePrice[w] || 0;
-    const heightUnitPrice = velcroFineDensePrice[h] || 0;
 
-    const widthPrice = Math.ceil((widthUnitPrice * (h / 10)) / 1000) * 1000;
-    const heightPrice = Math.ceil((heightUnitPrice * (w / 10)) / 1000) * 1000;
-    return Math.max(widthPrice, heightPrice);
+    const a = Math.min(w, h);
+    const b = Math.max(w, h);
+
+    const unitPrice = velcroFineDensePrice[a] || 0;
+
+    return Math.ceil((unitPrice * Math.ceil(b / 10)) / 1000) * 1000;
   } else if (type === "VelcroDustproof") {
     const w = Math.ceil(width / 10) * 10;
     const h = Math.ceil(height / 10) * 10;
-    const widthUnitPrice = velcroDustproofPrice[w] || 0;
-    const heightUnitPrice = velcroDustproofPrice[h] || 0;
 
-    const widthPrice = Math.ceil((widthUnitPrice * (h / 10)) / 1000) * 1000;
-    const heightPrice = Math.ceil((heightUnitPrice * (w / 10)) / 1000) * 1000;
-    return Math.max(widthPrice, heightPrice);
+    const a = Math.min(w, h);
+    const b = Math.max(w, h);
+
+    const unitPrice = velcroDustproofPrice[a] || 0;
+
+    return Math.ceil((unitPrice * Math.ceil(b / 10)) / 1000) * 1000;
   }
 
   return 0;
@@ -250,15 +262,15 @@ export default function DahamPage() {
             return num >= 10;
           }),
       })
-      .when("meshScreenType", {
-        is: (meshScreenType: keyof typeof MeshScreenType) =>
-          meshScreenType === "VelcroDustproof",
-        then: (schema) =>
-          schema.test("min", "80cm 이상 입력", (value) => {
-            const num = parseInt(value || "0", 10);
-            return num >= 80;
-          }),
-      })
+      // .when("meshScreenType", {
+      //   is: (meshScreenType: keyof typeof MeshScreenType) =>
+      //     meshScreenType === "VelcroDustproof",
+      //   then: (schema) =>
+      //     schema.test("min", "80cm 이상 입력", (value) => {
+      //       const num = parseInt(value || "0", 10);
+      //       return num >= 80;
+      //     }),
+      // })
       .required("가로를 입력해주세요."),
     height: yup
       .string()
