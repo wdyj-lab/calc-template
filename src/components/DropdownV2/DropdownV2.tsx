@@ -197,6 +197,7 @@ const DropdownContainer = styled.div<{
         `
       : css`
           border: 2px solid ${({ theme }) => theme.palette.core.BasePrimary};
+          margin: -1px 0px;
         `};
 
   ${({ alert }) =>

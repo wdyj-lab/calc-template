@@ -59,7 +59,7 @@ const TextAreaV2: React.FC<TextAreaV2Props> = ({
 
       onChange(v);
     },
-    [onChange, disabled, maxLength],
+    [onChange, disabled, maxLength]
   );
 
   const handleBlur = useCallback(
@@ -70,7 +70,7 @@ const TextAreaV2: React.FC<TextAreaV2Props> = ({
         onChange(value.trim());
       }
     },
-    [onBlur, onChange, value, shouldTrimOnBlur],
+    [onBlur, onChange, value, shouldTrimOnBlur]
   );
 
   return (
@@ -117,6 +117,7 @@ const TextAreaInnerWrapper = styled.div<
     showNegative: boolean;
   }
 >`
+  box-sizing: border-box;
   position: relative;
   display: flex;
   flex-direction: column;
@@ -126,7 +127,6 @@ const TextAreaInnerWrapper = styled.div<
   border: 1px solid ${({ theme }) => theme.palette.core.Borders200};
   border-radius: 3px;
   transition: border-color 0.3s;
-  
 
   ${({ size }) => {
     switch (size) {
@@ -167,9 +167,9 @@ const TextAreaInnerWrapper = styled.div<
   &:focus-within {
     padding: 0;
     border-color: ${({ showNegative, theme }) =>
-    showNegative
-      ? theme.palette.core.BaseCritical
-      : theme.palette.core.BasePrimary};
+      showNegative
+        ? theme.palette.core.BaseCritical
+        : theme.palette.core.BasePrimary};
     border-width: 2px;
   }
 
@@ -187,6 +187,10 @@ const TextAreaElement = styled.textarea<Pick<TextAreaV2Props, "size">>`
   height: 100%;
   border: none;
   resize: none;
+
+  &::placeholder {
+    font-size: 0.875rem; /* 14px */
+  }
 
   &::-webkit-scrollbar {
     width: 6px;
@@ -223,11 +227,11 @@ const TextAreaElement = styled.textarea<Pick<TextAreaV2Props, "size">>`
     }
   }};
 
-  font-size: 1.3rem;
+  font-size: 0.875rem; /* 14px */
   font-weight: 800;
 
   @media (max-width: 550px) {
-    font-size: 1.2rem;
+    font-size: 0.875rem; /* 14px */
   }
 `;
 
