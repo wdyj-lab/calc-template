@@ -50,7 +50,7 @@ const TableV2Body = <T extends { code: string }>({
         </tr>
       );
     },
-    [columns],
+    [columns]
   );
 
   const handleRowClick = useCallback(
@@ -62,7 +62,7 @@ const TableV2Body = <T extends { code: string }>({
 
       onRowClick?.(e, row);
     },
-    [onRowClick],
+    [onRowClick]
   );
 
   if (showLoading) {
@@ -170,6 +170,8 @@ const TableBody = styled.tbody`
 `;
 
 const InnerTable = styled.tr`
+  background-color: #fcfcfc;
+
   &:hover {
     background-color: transparent !important;
   }

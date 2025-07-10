@@ -212,9 +212,9 @@ const TableV2 = <T extends { code: string }>({
               onRowClick={handleRowClick}
             />
           </NativeTable>
-          <Waypoint onEnter={handleWaypointEnter}>
+          {/* <Waypoint onEnter={handleWaypointEnter}>
             <WaypointBox />
-          </Waypoint>
+          </Waypoint> */}
         </TableContainer>
       </DndContext>
     </Wrapper>

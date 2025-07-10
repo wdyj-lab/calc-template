@@ -3,7 +3,6 @@ import {
   FieldErrors,
   FieldValues,
   Path,
-  PathValue,
   UseFormSetValue,
   UseFormWatch,
 } from "react-hook-form";
@@ -21,7 +20,7 @@ const getSimpleProps = <T extends FieldValues = FieldValues>({
   watch,
   errors,
 }: SimpleProps<T>) => ({
-  onChange: (value: PathValue<T, Path<T>>) =>
+  onChange: (value: any) =>
     setValue(key as Path<T>, value, { shouldValidate: true }),
   value: convertToValue(watch(key as Path<T>)),
   hintType: (errors[key] ? "negative" : "positive") as HintType,

@@ -13,6 +13,7 @@ import MyungsungAcrylicImageType from "@/lib/constant/MyungsungAcrylicImageType"
 import MyungsungAcrylicType from "@/lib/constant/MyungsungAcrylicType";
 import MyungsungPostProcessingPriceType from "@/lib/constant/MyungsungPostProcessingPriceType";
 import MyungsungPostProcessingType from "@/lib/constant/MyungsungPostProcessingType";
+import { firestoreService } from "@/lib/firestore";
 import getSimpleProps from "@/lib/utils/getSimpleProps";
 import { yupResolver } from "@hookform/resolvers/yup";
 import Head from "next/head";
@@ -24,7 +25,7 @@ import * as yup from "yup";
 
 interface AcrylicFormSource {
   type: keyof typeof MyungsungAcrylicType;
-  color: string | undefined;
+  color?: string;
   thickness: string;
   width: number;
   height: number;
@@ -41,7 +42,7 @@ interface CustomerFormSource {
   customerName: string;
   customerPhone: string;
   customerEmail: string;
-  customerRequest: string | undefined;
+  customerRequest?: string;
 }
 
 export default function MyungsungPage() {
@@ -121,6 +122,33 @@ export default function MyungsungPage() {
       .typeError("수량은 숫자로 입력해주세요.")
       .min(1, "최소 1개 이상의 수량을 입력해주세요.")
       .required("수량을 입력해주세요."),
+    postProcessing: yup
+      .array()
+      .of(yup.mixed<keyof typeof MyungsungPostProcessingType>().required())
+      .optional(),
+    postProcessingOptions: yup
+      .array()
+      .of(
+        yup.object().shape({
+          key: yup.mixed<keyof typeof MyungsungPostProcessingType>().required(),
+          value: yup.string().required(),
+          price: yup.number().required(),
+        })
+      )
+      .optional(),
+  });
+
+  const customerFormResolver = yup.object<CustomerFormSource>().shape({
+    customerName: yup.string().required("수취인명을 입력해주세요."),
+    customerPhone: yup.string().required("수취인 연락처를 입력해주세요."),
+    customerEmail: yup
+      .string()
+      .email("유효한 이메일 주소를 입력해주세요.")
+      .required("수취인 이메일을 입력해주세요."),
+    customerRequest: yup
+      .string()
+      .max(500, "요청사항은 최대 500자까지 입력 가능합니다.")
+      .optional(),
   });
 
   const methods = useForm<AcrylicFormSource>({
@@ -129,7 +157,14 @@ export default function MyungsungPage() {
     resolver: yupResolver(formResolver),
     defaultValues: {
       type: "ACRYLIC",
+      color: "투명",
     },
+  });
+
+  const customerFormMethods = useForm<CustomerFormSource>({
+    mode: "onChange",
+    reValidateMode: "onChange",
+    resolver: yupResolver(customerFormResolver),
   });
 
   const mmToCmRoundedUp = (mmValue: number) => Math.ceil(mmValue / 100) * 10;
@@ -146,7 +181,7 @@ export default function MyungsungPage() {
 
   const [estimates, setEstimates] = useState<Estimate[]>([]);
 
-  const handleSubmit = () => {
+  const handleAddCart = () => {
     if (!methods.formState.isValid) {
       methods.trigger();
       return;
@@ -156,7 +191,9 @@ export default function MyungsungPage() {
     const estimate = new Estimate(
       formData.type,
       formData.color,
-      `${width}mm x ${height}mm x ${thickness}T`,
+      `${methods.watch("width")}mm x ${methods.watch(
+        "height"
+      )}mm x ${thickness}T`,
       formData.quantity,
       totalPrice,
       formData.postProcessing
@@ -170,6 +207,46 @@ export default function MyungsungPage() {
 
     setEstimates((prev) => [...prev, estimate]);
     methods.reset();
+  };
+
+  const handleSubmit = async () => {
+    if (!customerFormMethods.formState.isValid) {
+      customerFormMethods.trigger();
+      return;
+    }
+
+    if (estimates.length === 0) {
+      alert("견적서에 추가된 제품이 없습니다.");
+      return;
+    }
+
+    try {
+      const { create } = firestoreService.estimates;
+      const customerData = customerFormMethods.getValues();
+
+      const estimatesData = estimates.map(
+        (estimate) => estimate.toEstimateDate
+      );
+
+      // 깊은 복사를 위해 JSON으로 변환 후 파싱
+      const childEstimatesData = estimatesData.map((data) => ({
+        ...data,
+      }));
+
+      estimatesData[0].childEstimates = childEstimatesData;
+
+      await create({
+        ...estimatesData[0],
+        ...customerData,
+      });
+
+      alert("견적서가 성공적으로 전송되었습니다!");
+      setEstimates([]);
+      customerFormMethods.reset();
+    } catch (error) {
+      console.error("견적서 전송 중 오류가 발생했습니다:", error);
+      alert("견적서 전송 중 오류가 발생했습니다. 다시 시도해주세요.");
+    }
   };
 
   return (
@@ -193,7 +270,7 @@ export default function MyungsungPage() {
             status="primary"
             minWidth="180px"
             style={{ maxWidth: "180px", margin: "20px auto" }}
-            onClick={handleSubmit}
+            onClick={handleAddCart}
           >
             제품 담기
           </ButtonV2>
@@ -207,16 +284,19 @@ export default function MyungsungPage() {
             }}
           />
           <TotalPriceBox estimates={estimates} />
-          <ContactBox />
-          <ButtonV2
-            size="lg"
-            status="primary"
-            minWidth="220px"
-            style={{ margin: "20px auto" }}
-          >
-            판매자에게 견적 전송하기
-          </ButtonV2>
         </FormProvider>
+        <FormProvider {...customerFormMethods}>
+          <ContactBox />
+        </FormProvider>
+        <ButtonV2
+          size="lg"
+          status="primary"
+          minWidth="220px"
+          style={{ margin: "20px auto" }}
+          onClick={handleSubmit}
+        >
+          판매자에게 견적 전송하기
+        </ButtonV2>
       </Layout>
     </>
   );
@@ -232,9 +312,16 @@ function AcrylicTypeTileList() {
           <AcrylicGridItem
             key={key}
             selected={key === watch("type")}
-            onClick={() =>
-              reset({ type: key as keyof typeof MyungsungAcrylicType })
-            }
+            onClick={() => {
+              if (key === "ACRYLIC") {
+                reset({
+                  type: key as keyof typeof MyungsungAcrylicType,
+                  color: "투명",
+                });
+                return;
+              }
+              reset({ type: key as keyof typeof MyungsungAcrylicType });
+            }}
           >
             {MyungsungAcrylicType[key as keyof typeof MyungsungAcrylicType]}
           </AcrylicGridItem>
@@ -463,13 +550,15 @@ function PostProcessingOption({
       <PostProcessingOptionLabel>
         {MyungsungPostProcessingType[type]}
       </PostProcessingOptionLabel>
-      <DropdownV2
-        width="100%"
-        options={options}
-        optionContainerWidth="100%"
-        value={selectedProcessingOption}
-        onChange={onChange}
-      />
+      <PostProcessingOptionInput>
+        <DropdownV2
+          width="100%"
+          options={options}
+          optionContainerWidth="100%"
+          value={selectedProcessingOption}
+          onChange={onChange}
+        />
+      </PostProcessingOptionInput>
       <ButtonV2 style={{ marginLeft: "10px" }}>사진보기</ButtonV2>
       <PostProcessingOptionPriceLabel>
         {processingFeeString}
@@ -539,7 +628,7 @@ function TotalPriceBox({ estimates }: { estimates: Estimate[] }) {
         }}
       >
         <LabelAndTextInput>
-          <label>총 견적금액</label>
+          <label>총 견적 금액</label>
           <TextInputV2
             width="100%"
             unit="원"
@@ -571,28 +660,11 @@ function TotalPriceBox({ estimates }: { estimates: Estimate[] }) {
 }
 
 function ContactBox() {
-  const customerFormResolver = yup.object<CustomerFormSource>().shape({
-    customerName: yup.string().required("수취인명을 입력해주세요."),
-    customerPhone: yup.string().required("수취인 연락처를 입력해주세요."),
-    customerEmail: yup
-      .string()
-      .email("유효한 이메일 주소를 입력해주세요.")
-      .required("수취인 이메일을 입력해주세요."),
-    customerRequest: yup
-      .string()
-      .optional()
-      .max(500, "요청사항은 최대 500자까지 입력 가능합니다."),
-  });
-
   const {
-    watch,
     setValue,
+    watch,
     formState: { errors },
-  } = useForm<CustomerFormSource>({
-    mode: "onChange",
-    reValidateMode: "onChange",
-    resolver: yupResolver(customerFormResolver),
-  });
+  } = useFormContext<CustomerFormSource>();
 
   return (
     <ContactBoxWrapper>
@@ -836,6 +908,15 @@ const PostProcessingOptionLabel = styled.label`
     min-width: 100px;
     font-size: 0.8rem;
     font-weight: 600;
+  }
+`;
+
+const PostProcessingOptionInput = styled.div`
+  width: 100%;
+  box-sizing: border-box;
+
+  @media (max-width: 550px) {
+    max-width: 130px;
   }
 `;
 

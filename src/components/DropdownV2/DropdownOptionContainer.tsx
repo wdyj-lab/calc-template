@@ -89,10 +89,10 @@ const DropdownOptionContainer: FC<DropdownOptionContainerProps> = ({
       // onFilterChange가 있을 떄에는 필터를 외부에서 제어하므로 여기서는 필터링하지 않는다.
       useFilter && !onFilterChange && filterText
         ? options.filter((option) =>
-          typeof option.label === "string"
-            ? option.label.toLowerCase().includes(filterText.toLowerCase())
-            : true
-        )
+            typeof option.label === "string"
+              ? option.label.toLowerCase().includes(filterText.toLowerCase())
+              : true
+          )
         : options,
     [useFilter, onFilterChange, filterText, options]
   );
@@ -227,7 +227,7 @@ const DropdownOptionContainer: FC<DropdownOptionContainerProps> = ({
 
 export default DropdownOptionContainer;
 
-const StyledScrollbar = styled(PerfectScrollbar) <{
+const StyledScrollbar = styled(PerfectScrollbar)<{
   useFilter: boolean;
   maxHeight?: string;
 }>`
@@ -243,7 +243,6 @@ const StyledScrollbar = styled(PerfectScrollbar) <{
   @media ${generateMediaQuery("<", "md")} {
     overflow: scroll;
   }
-
 `;
 
 const OptionContainer = styled.div<{
@@ -279,7 +278,7 @@ const OptionContainer = styled.div<{
   z-index: ${({ theme }) => theme.elevation.contents};
 
   @media ${generateMediaQuery("<", "md")} {
-    background-color: ${({ theme }) => theme.palette.core.White};
+    background-color: #ffffff;
     position: fixed;
     z-index: ${({ theme }) => theme.elevation.PopUp + 5};
     top: 50%;
@@ -294,12 +293,12 @@ const OptionContainer = styled.div<{
     border-radius: 10px;
     box-shadow: 0px 0px 10px
         ${({ theme }) =>
-    Color(theme.palette.core.Shadow).alpha(0.25).toString()},
+          Color(theme.palette.core.Shadow).alpha(0.25).toString()},
       0px 30px 30px
         ${({ theme }) => Color(theme.palette.core.Shadow).alpha(0.2).toString()},
       0px 25px 40px
         ${({ theme }) =>
-    Color(theme.palette.core.Shadow).alpha(0.15).toString()};
+          Color(theme.palette.core.Shadow).alpha(0.15).toString()};
   }
 
   .ps__rail-x {
@@ -313,7 +312,7 @@ const OptionContainer = styled.div<{
   overflow: auto;
 `;
 
-const FilterInput = styled(TextInputV2) <{ optionContainerWidth: string }>`
+const FilterInput = styled(TextInputV2)<{ optionContainerWidth: string }>`
   width: ${({ optionContainerWidth }) => optionContainerWidth};
   margin: 6px -8px;
   padding: 0 6px;

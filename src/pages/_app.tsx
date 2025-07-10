@@ -1,3 +1,4 @@
+import { GlobalStyle } from "@/globalStyle";
 import BaseTheme from "@/themes/BaseTheme";
 import type { AppProps } from "next/app";
 import localFont from "next/font/local";
@@ -29,10 +30,9 @@ const nanumRound = localFont({
 });
 
 export default function App({ Component, pageProps }: AppProps) {
-
-
   return (
     <ThemeProvider theme={BaseTheme}>
+      <GlobalStyle />
       <main className={nanumRound.className}>
         <Component {...pageProps} />
       </main>

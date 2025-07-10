@@ -87,6 +87,7 @@ const SectionWrapper = styled.div<{ disabled?: boolean }>`
   height: 100%;
   padding: 0 10px;
   color: ${({ theme }) => theme.palette.text.PrimaryText};
+  box-sizing: border-box;
 `;
 
 const StyledLabel = styled.label<{ isSelected: boolean }>`

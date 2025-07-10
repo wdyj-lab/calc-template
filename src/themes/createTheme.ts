@@ -30,14 +30,14 @@ const getColorFromColorCode = (colorCode: ColorCode) =>
         .toString();
 
 const createTheme = <SpotPaletteKeys extends string>(
-  options: ThemeOptions<SpotPaletteKeys>,
+  options: ThemeOptions<SpotPaletteKeys>
 ): ThemeInterface<SpotPaletteKeys> => {
   const corePalette = Object.entries(options.palette.core).reduce<CorePalette>(
     (prev, [key, value]) => ({
       ...prev,
       [key]: getColorFromColorCode(value),
     }),
-    {} as CorePalette,
+    {} as CorePalette
   );
 
   type SpotPalette = {
@@ -49,7 +49,7 @@ const createTheme = <SpotPaletteKeys extends string>(
     !(typeof v === "string" && !basePaletteKeys.includes(v));
 
   const spotPalette = Object.entries<ColorCode | string>(
-    options.palette.spot,
+    options.palette.spot
   ).reduce<SpotPalette>((prev, [key, value]) => {
     return {
       ...prev,
@@ -62,7 +62,7 @@ const createTheme = <SpotPaletteKeys extends string>(
       ...prev,
       [key]: getColorFromColorCode(value),
     }),
-    {} as TextPalette,
+    {} as TextPalette
   );
 
   return {
