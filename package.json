@@ -36,7 +36,8 @@
     "react-perfect-scrollbar": "^1.5.8",
     "styled-components": "^6.0.0-rc.5",
     "typescript": "5.1.6",
-    "yup": "^1.2.0"
+    "yup": "^1.2.0",
+    "react-day-picker": "^7.4.8"
   },
   "devDependencies": {
     "@types/color": "^3.0.3",

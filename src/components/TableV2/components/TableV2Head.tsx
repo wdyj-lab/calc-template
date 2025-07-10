@@ -33,7 +33,7 @@ const TableV2Head = <T extends { code: string }>({
                 ? null
                 : flexRender(
                     header.column.columnDef.header,
-                    header.getContext(),
+                    header.getContext()
                   )}
               {resize && (
                 <Resizer
@@ -57,7 +57,7 @@ export default TableV2Head;
 const TableHead = styled.thead<{ $headerAlign: string }>`
   position: sticky;
   top: 0;
-  z-index: ${({ theme }) => theme.elevation.tableFixedElements};
+  z-index: 5;
   color: ${({ theme }) =>
     Color(theme.palette.text.PrimaryText).alpha(0.8).toString()};
   background-color: ${({ theme }) => theme.palette.core.BackgroundSecondary};

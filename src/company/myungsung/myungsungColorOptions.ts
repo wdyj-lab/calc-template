@@ -14,7 +14,6 @@ const myungsungColorOptions = {
       label: "흑색투명(스모그)",
     },
     { key: "연두형광", value: "연두형광", label: "연두형광" },
-    { key: "커피색반투명", value: "커피색반투명", label: "커피색반투명" },
     { key: "오렌지형광", value: "오렌지형광", label: "오렌지형광" },
     { key: "노랑색", value: "노랑색", label: "노랑색" },
     { key: "노랑투명", value: "노랑투명", label: "노랑투명" },
