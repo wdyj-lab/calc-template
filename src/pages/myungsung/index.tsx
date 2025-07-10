@@ -22,6 +22,7 @@ import { useState } from "react";
 import { FormProvider, useForm, useFormContext } from "react-hook-form";
 import { styled } from "styled-components";
 import * as yup from "yup";
+import emailjs from "@emailjs/browser";
 
 interface AcrylicFormSource {
   type: keyof typeof MyungsungAcrylicType;
@@ -228,7 +229,6 @@ export default function MyungsungPage() {
         (estimate) => estimate.toEstimateDate
       );
 
-      // 깊은 복사를 위해 JSON으로 변환 후 파싱
       const childEstimatesData = estimatesData.map((data) => ({
         ...data,
       }));
@@ -240,9 +240,44 @@ export default function MyungsungPage() {
         ...customerData,
       });
 
+      const mailServiceId = process.env.NEXT_PUBLIC_MAIL_SERVICE_ID;
+      const mailTemplateId = process.env.NEXT_PUBLIC_MAIL_TEMPLATE_ID;
+
+      if (!mailServiceId || !mailTemplateId) {
+        return;
+      }
+
+      const totalPrice = estimatesData.reduce(
+        (acc, estimate) =>
+          acc + (estimate.price + estimate.postProcessingPrice),
+        0
+      );
+
+      emailjs
+        .send(
+          mailServiceId,
+          mailTemplateId,
+          {
+            email: customerFormMethods.watch("customerEmail"),
+            orders: estimatesData.map((estimate) => ({
+              name: `${estimate.type} / ${estimate.color} / ${estimate.size}`,
+              price: `${(
+                estimate.price + estimate.postProcessingPrice
+              ).toLocaleString()}원`,
+              units: estimate.quantity,
+            })),
+            name: `${estimatesData[0].type} 외 ${estimates.length - 1}건`,
+            price: totalPrice.toLocaleString(),
+            totalEstimatePrice: totalPrice.toLocaleString(),
+            calcQuantity: Math.ceil(totalPrice / 100),
+          },
+          "FE8kF-BjJhcCQpe7h"
+        )
+        .then((res) => {})
+        .catch((err) => {});
+
       alert("견적서가 성공적으로 전송되었습니다!");
-      setEstimates([]);
-      customerFormMethods.reset();
+      customerFormMethods.reset({});
     } catch (error) {
       console.error("견적서 전송 중 오류가 발생했습니다:", error);
       alert("견적서 전송 중 오류가 발생했습니다. 다시 시도해주세요.");
@@ -288,15 +323,37 @@ export default function MyungsungPage() {
         <FormProvider {...customerFormMethods}>
           <ContactBox />
         </FormProvider>
-        <ButtonV2
-          size="lg"
-          status="primary"
-          minWidth="220px"
-          style={{ margin: "20px auto" }}
-          onClick={handleSubmit}
+        <div
+          style={{
+            display: "flex",
+            gap: "10px",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
         >
-          판매자에게 견적 전송하기
-        </ButtonV2>
+          <ButtonV2
+            size="lg"
+            status="primary"
+            minWidth="220px"
+            onClick={handleSubmit}
+          >
+            판매자에게 견적 전송하기
+          </ButtonV2>
+          <ButtonV2
+            size="lg"
+            status="primary"
+            minWidth="220px"
+            style={{ backgroundColor: "#00C73C" }}
+            onClick={() =>
+              window.open(
+                "https://smartstore.naver.com/sellacrylic/products/5762492997",
+                "_blank"
+              )
+            }
+          >
+            스마트스토어로 구매하러가기
+          </ButtonV2>
+        </div>
       </Layout>
     </>
   );

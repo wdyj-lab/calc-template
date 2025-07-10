@@ -16,6 +16,14 @@ export default function MyungsungAdminPage() {
   const [password, setPassword] = useState("");
   const [passwordError, setPasswordError] = useState("");
 
+  // 컴포넌트 마운트 시 세션에서 인증 상태 확인
+  useEffect(() => {
+    const isSessionAuthenticated = sessionStorage.getItem('myungsung_admin_auth') === 'true';
+    if (isSessionAuthenticated) {
+      setIsAuthenticated(true);
+    }
+  }, []);
+
   const currentDate = new Date();
   const currentYear = currentDate.getFullYear().toString();
   const currentMonth = (currentDate.getMonth() + 1).toString().padStart(2, "0");
@@ -30,6 +38,8 @@ export default function MyungsungAdminPage() {
     const correctPassword = `${process.env.NEXT_PUBLIC_ADMIN_PASSWORD}`; // 비밀번호를 원하는 4자리로 변경
 
     if (password === correctPassword) {
+      // 세션스토리지에 인증 상태 저장
+      sessionStorage.setItem('myungsung_admin_auth', 'true');
       setIsAuthenticated(true);
       setPasswordError("");
     } else {
@@ -42,6 +52,11 @@ export default function MyungsungAdminPage() {
     if (e.key === "Enter") {
       handlePasswordSubmit();
     }
+  };
+
+  const handleLogout = () => {
+    sessionStorage.removeItem('myungsung_admin_auth');
+    setIsAuthenticated(false);
   };
 
   useEffect(() => {
@@ -189,6 +204,14 @@ export default function MyungsungAdminPage() {
             onChange={(value) => setCompleted(value)}
             tab={false}
           />
+          <ButtonV2
+            onClick={handleLogout}
+            status="secondary"
+            size="sm"
+            style={{ marginLeft: "auto" }}
+          >
+            로그아웃
+          </ButtonV2>
         </ControlBox>
         <TableWrapper>
           <TableV2
