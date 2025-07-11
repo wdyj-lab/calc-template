@@ -1,8 +1,11 @@
 import MyungsungAcrylicType from "@/lib/constant/MyungsungAcrylicType";
+import MyungsungSkashiType from "@/lib/constant/MyungsungSkashiType";
 import { EstimateData } from "@/lib/firestore";
 
 export default class Estimate {
-  private name: keyof typeof MyungsungAcrylicType;
+  private name:
+    | keyof typeof MyungsungAcrylicType
+    | keyof typeof MyungsungSkashiType;
   private color: string | undefined;
   private size: string;
   private quantity: number;
@@ -11,7 +14,7 @@ export default class Estimate {
   public postProcessingPrice: number;
 
   constructor(
-    name: keyof typeof MyungsungAcrylicType,
+    name: keyof typeof MyungsungAcrylicType | keyof typeof MyungsungSkashiType,
     color: string | undefined,
     size: string,
     quantity: number,
@@ -33,11 +36,25 @@ export default class Estimate {
   }
 
   public get formattedName() {
-    return MyungsungAcrylicType[this.name];
+    if (this.name in MyungsungSkashiType) {
+      return MyungsungSkashiType[
+        this.name as keyof typeof MyungsungSkashiType
+      ].toString();
+    } else if (this.name in MyungsungAcrylicType) {
+      return MyungsungAcrylicType[
+        this.name as keyof typeof MyungsungAcrylicType
+      ].toString();
+    } else {
+      return this.name.toString();
+    }
   }
 
   public get formattedQuantity() {
     return `${this.quantity.toLocaleString()}개`;
+  }
+
+  public get formattedLetterQuantity() {
+    return `${this.quantity.toLocaleString()}자`;
   }
 
   public get formattedPrice() {

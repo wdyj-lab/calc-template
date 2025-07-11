@@ -1,42 +1,33 @@
 import Estimate from "@/company/myungsung/models/Estimate";
-import myungsungColorOptions from "@/company/myungsung/myungsungColorOptions";
 import myungsungEstimateColumns from "@/company/myungsung/myungsungEstimateColumns";
-import myungsungPostProcessingOptions from "@/company/myungsung/myungsungPostProcessingOptions";
-import myungsungPriceSchema from "@/company/myungsung/myungsungPriceSchema";
-import myungsungThicknessOptions from "@/company/myungsung/myungsungThicknessOptions";
+import myungsungSkashiColorOptions from "@/company/myungsung/myungsungSkashiColorOptions";
+import myungsungSkashiEstimateColumns from "@/company/myungsung/myungsungSkashiEstimateColumns";
+import myungsungSkashiPriceSchema from "@/company/myungsung/myungsungSkashiPriceSchema";
+import myungsungSkashiThicknessOptions from "@/company/myungsung/myungsungSkashiThicknessOptions";
 import ButtonV2 from "@/components/ButtonV2";
 import DropdownV2 from "@/components/DropdownV2";
 import { TableV2 } from "@/components/TableV2";
 import TextAreaV2 from "@/components/TextAreaV2";
 import TextInputV2 from "@/components/TextInputV2";
-import MyungsungAcrylicImageType from "@/lib/constant/MyungsungAcrylicImageType";
-import MyungsungAcrylicType from "@/lib/constant/MyungsungAcrylicType";
-import MyungsungPostProcessingPriceType from "@/lib/constant/MyungsungPostProcessingPriceType";
-import MyungsungPostProcessingType from "@/lib/constant/MyungsungPostProcessingType";
+import MyungsungSkashiType from "@/lib/constant/MyungsungSkashiType";
 import { firestoreService } from "@/lib/firestore";
 import getSimpleProps from "@/lib/utils/getSimpleProps";
+import emailjs from "@emailjs/browser";
 import { yupResolver } from "@hookform/resolvers/yup";
 import Head from "next/head";
-import Image from "next/image";
 import { useState } from "react";
 import { FormProvider, useForm, useFormContext } from "react-hook-form";
 import { styled } from "styled-components";
 import * as yup from "yup";
-import emailjs from "@emailjs/browser";
 
-interface AcrylicFormSource {
-  type: keyof typeof MyungsungAcrylicType;
-  color?: string;
+interface SkashiFormSource {
+  type: keyof typeof MyungsungSkashiType;
+  color: string;
   thickness: string;
-  width: number;
-  height: number;
+  fontFamily: string;
+  fontHeight: number;
   quantity: number;
-  postProcessing?: (keyof typeof MyungsungPostProcessingType)[];
-  postProcessingOptions?: {
-    key: keyof typeof MyungsungPostProcessingType;
-    value: string;
-    price: number;
-  }[];
+  letter: string;
 }
 
 interface CustomerFormSource {
@@ -46,97 +37,32 @@ interface CustomerFormSource {
   customerRequest?: string;
 }
 
-export default function MyungsungPage() {
-  const formResolver = yup.object<AcrylicFormSource>().shape({
+export default function MyungsungSkashiPage() {
+  const formResolver = yup.object<SkashiFormSource>().shape({
     type: yup
-      .mixed<keyof typeof MyungsungAcrylicType>()
+      .mixed<keyof typeof MyungsungSkashiType>()
       .oneOf(
-        Object.keys(
-          MyungsungAcrylicType
-        ) as (keyof typeof MyungsungAcrylicType)[]
+        Object.keys(MyungsungSkashiType) as (keyof typeof MyungsungSkashiType)[]
       )
       .required("판의 종류를 선택해주세요."),
-    color: yup
-      .string()
-      .when("type", {
-        is: (type: keyof typeof MyungsungAcrylicType) => type !== "ACRYLIC",
-        then: (color) => color.required("색상을 선택해주세요."),
-      })
-      .optional(),
+    color: yup.string().required("색상을 선택해주세요."),
     thickness: yup.string().required("두께를 입력해주세요."),
-    width: yup
+    fontFamily: yup.string().required("글씨체를 입력해주세요."),
+    fontHeight: yup
       .number()
-      .typeError("가로 사이즈는 숫자로 입력해주세요.")
-      .min(10, "가로 사이즈는 최소 10mm입니다.")
-      .when("type", {
-        is: (type: keyof typeof MyungsungAcrylicType) =>
-          type === "ACRYLIC" || type === "ACRYLIC_PC",
-        then: (width) => width.max(1200, "가로 사이즈는 최대 1200mm입니다."),
-      })
-      .when(["type", "thickness"], {
-        is: (type: keyof typeof MyungsungAcrylicType, thickness: string) =>
-          type === "ACRYLIC_COLOR" && thickness === "2",
-        then: (width) => width.max(900, "가로 사이즈는 최대 900mm입니다."),
-      })
-      .when(["type", "thickness"], {
-        is: (type: keyof typeof MyungsungAcrylicType, thickness: string) =>
-          type === "ACRYLIC_COLOR" && thickness !== "2",
-        then: (width) => width.max(1200, "가로 사이즈는 최대 1200mm입니다."),
-      })
-      .when("type", {
-        is: (type: keyof typeof MyungsungAcrylicType) =>
-          type === "ACRYLIC_MATTE" ||
-          type === "ACRYLIC_PVC" ||
-          type === "ACRYLIC_MIRROR",
-        then: (width) => width.max(900, "가로 사이즈는 최대 900mm입니다."),
-      })
-      .required("가로 사이즈를 입력해주세요."),
-    height: yup
-      .number()
-      .typeError("세로 사이즈는 숫자로 입력해주세요.")
-      .min(10, "세로 사이즈는 최소 10mm입니다.")
-      .when("type", {
-        is: (type: keyof typeof MyungsungAcrylicType) =>
-          type === "ACRYLIC" || type === "ACRYLIC_PC",
-        then: (width) => width.max(2400, "세로 사이즈는 최대 2400mm입니다."),
-      })
-      .when(["type", "thickness"], {
-        is: (type: keyof typeof MyungsungAcrylicType, thickness: string) =>
-          type === "ACRYLIC_COLOR" && thickness === "2",
-        then: (width) => width.max(1800, "세로 사이즈는 최대 1800mm입니다."),
-      })
-      .when(["type", "thickness"], {
-        is: (type: keyof typeof MyungsungAcrylicType, thickness: string) =>
-          type === "ACRYLIC_COLOR" && thickness !== "2",
-        then: (width) => width.max(2400, "세로 사이즈는 최대 2400mm입니다."),
-      })
-      .when("type", {
-        is: (type: keyof typeof MyungsungAcrylicType) =>
-          type === "ACRYLIC_MATTE" ||
-          type === "ACRYLIC_PVC" ||
-          type === "ACRYLIC_MIRROR",
-        then: (width) => width.max(1800, "세로 사이즈는 최대 1800mm입니다."),
-      })
-      .required("세로 사이즈를 입력해주세요."),
+      .typeError("글자 상세 높이는 숫자로 입력해주세요.")
+      .min(300, "글자 상세 높이는 최소 300mm입니다.")
+      .max(4000, "글자 상세 높이는 최대 4000mm입니다.")
+      .required("글자 상세 높이를 입력해주세요."),
     quantity: yup
       .number()
-      .typeError("수량은 숫자로 입력해주세요.")
-      .min(1, "최소 1개 이상의 수량을 입력해주세요.")
-      .required("수량을 입력해주세요."),
-    postProcessing: yup
-      .array()
-      .of(yup.mixed<keyof typeof MyungsungPostProcessingType>().required())
-      .optional(),
-    postProcessingOptions: yup
-      .array()
-      .of(
-        yup.object().shape({
-          key: yup.mixed<keyof typeof MyungsungPostProcessingType>().required(),
-          value: yup.string().required(),
-          price: yup.number().required(),
-        })
-      )
-      .optional(),
+      .typeError("글자수 숫자로 입력해주세요.")
+      .min(1, "글자수는 최소 1개 이상 입력해주세요.")
+      .required("글자수를 입력해주세요."),
+    letter: yup
+      .string()
+      .min(1, "글자는 최소 1자 이상 입력해주세요.")
+      .required("글자는 필수 입력값입니다."),
   });
 
   const customerFormResolver = yup.object<CustomerFormSource>().shape({
@@ -152,12 +78,12 @@ export default function MyungsungPage() {
       .optional(),
   });
 
-  const methods = useForm<AcrylicFormSource>({
+  const methods = useForm<SkashiFormSource>({
     mode: "onChange",
     reValidateMode: "onChange",
     resolver: yupResolver(formResolver),
     defaultValues: {
-      type: "ACRYLIC",
+      type: "GLOSSY",
       color: "투명",
     },
   });
@@ -169,14 +95,14 @@ export default function MyungsungPage() {
   });
 
   const mmToCmRoundedUp = (mmValue: number) => Math.ceil(mmValue / 100) * 10;
-  const width = mmToCmRoundedUp(methods.watch("width") || 0);
-  const height = mmToCmRoundedUp(methods.watch("height") || 0);
+  const fontHeight = mmToCmRoundedUp(methods.watch("fontHeight") || 0);
   const thickness = Number(methods.watch("thickness") || 0);
   const quantity = methods.watch("quantity") || 0;
+  const letter = methods.watch("letter") || "";
 
-  const key = `${width}x${height}x${thickness}`;
+  const key = `${getFontHeightSlot(fontHeight)}x${thickness}`;
 
-  const priceSchema = myungsungPriceSchema[methods.watch("type")];
+  const priceSchema = myungsungSkashiPriceSchema[methods.watch("type")];
   const price = priceSchema[key as keyof typeof priceSchema] * quantity;
   const totalPrice = isNaN(price) ? 0 : price;
 
@@ -192,18 +118,11 @@ export default function MyungsungPage() {
     const estimate = new Estimate(
       formData.type,
       formData.color,
-      `${methods.watch("width")}mm x ${methods.watch(
-        "height"
-      )}mm x ${thickness}T`,
+      `${methods.watch("fontHeight")}mm x ${thickness}T`,
       formData.quantity,
       totalPrice,
-      formData.postProcessing
-        ?.map((option) => MyungsungPostProcessingType[option])
-        .join(", ") || "",
-      formData.postProcessingOptions?.reduce(
-        (acc, option) => acc + option.price,
-        0
-      ) || 0
+      `${letter} (${formData.fontFamily})`,
+      0
     );
 
     setEstimates((prev) => [...prev, estimate]);
@@ -293,13 +212,23 @@ export default function MyungsungPage() {
         <FormProvider {...methods}>
           <FormLabel>1. 구매하실 판의 종류를 선택해주세요.</FormLabel>
           <AcrylicTypeTileList />
-          <FormLabel>2. 선택하신 판재의 사이즈를 입력해주세요.</FormLabel>
+          <FormLabel>2. 상세 옵션을 입력해주세요.</FormLabel>
           <ImageAndSpecGrid>
             <AcrylicImageBox />
             <AcrylicSpecBox />
           </ImageAndSpecGrid>
-          <FormLabel>2-1. 가공 옵션을 선택해주세요.</FormLabel>
-          <PostProcessingBox />
+          <FormLabel>2-1. 주문하실 글자를 입력해주세요.</FormLabel>
+          <TextAreaV2
+            width="100%"
+            height="100px"
+            placeholder="예) 오늘예쁨, 여전히 예쁘다"
+            {...getSimpleProps({
+              key: "letter",
+              setValue: methods.setValue,
+              watch: methods.watch,
+              errors: methods.formState.errors,
+            })}
+          />
           <ButtonV2
             size="lg"
             status="primary"
@@ -353,11 +282,11 @@ export default function MyungsungPage() {
 }
 
 function AcrylicTypeTileList() {
-  const { watch, reset } = useFormContext<AcrylicFormSource>();
+  const { watch, reset } = useFormContext<SkashiFormSource>();
 
   return (
     <AcrylicGrid>
-      {Object.keys(MyungsungAcrylicType).map((key) => {
+      {Object.keys(MyungsungSkashiType).map((key) => {
         return (
           <AcrylicGridItem
             key={key}
@@ -365,15 +294,15 @@ function AcrylicTypeTileList() {
             onClick={() => {
               if (key === "ACRYLIC") {
                 reset({
-                  type: key as keyof typeof MyungsungAcrylicType,
+                  type: key as keyof typeof MyungsungSkashiType,
                   color: "투명",
                 });
                 return;
               }
-              reset({ type: key as keyof typeof MyungsungAcrylicType });
+              reset({ type: key as keyof typeof MyungsungSkashiType });
             }}
           >
-            {MyungsungAcrylicType[key as keyof typeof MyungsungAcrylicType]}
+            {MyungsungSkashiType[key as keyof typeof MyungsungSkashiType]}
           </AcrylicGridItem>
         );
       })}
@@ -382,18 +311,40 @@ function AcrylicTypeTileList() {
 }
 
 function AcrylicImageBox() {
-  const { watch } = useFormContext<AcrylicFormSource>();
+  const { watch } = useFormContext<SkashiFormSource>();
 
   return (
     <ImageBox>
-      <Image
+      {/* <Image
         src={MyungsungAcrylicImageType[watch("type")]}
         alt="Acrylic Image"
         fill
         style={{ objectFit: "contain" }}
-      />
+      /> */}
     </ImageBox>
   );
+}
+
+function getFontHeightSlot(fontHeight: number) {
+  if (fontHeight < 51) {
+    return "30~50";
+  } else if (fontHeight < 101) {
+    return "51~100";
+  } else if (fontHeight < 151) {
+    return "101~150";
+  } else if (fontHeight < 201) {
+    return "151~200";
+  } else if (fontHeight < 251) {
+    return "201~250";
+  } else if (fontHeight < 301) {
+    return "251~300";
+  } else if (fontHeight < 351) {
+    return "301~350";
+  } else if (fontHeight < 401) {
+    return "351~400";
+  } else {
+    return "0~0";
+  }
 }
 
 function AcrylicSpecBox() {
@@ -402,21 +353,19 @@ function AcrylicSpecBox() {
     setValue,
     trigger,
     formState: { errors },
-  } = useFormContext<AcrylicFormSource>();
+  } = useFormContext<SkashiFormSource>();
 
-  const isDisableColor = watch("type") === "ACRYLIC";
-  const colorOptions = myungsungColorOptions[watch("type")] || [];
-  const thicknessOptions = myungsungThicknessOptions[watch("type")] || [];
+  const colorOptions = myungsungSkashiColorOptions[watch("type")] || [];
+  const thicknessOptions = myungsungSkashiThicknessOptions[watch("type")] || [];
 
   const mmToCmRoundedUp = (mmValue: number) => Math.ceil(mmValue / 100) * 10;
-  const width = mmToCmRoundedUp(watch("width") || 0);
-  const height = mmToCmRoundedUp(watch("height") || 0);
+  const fontHeight = mmToCmRoundedUp(watch("fontHeight") || 0);
   const thickness = Number(watch("thickness") || 0);
   const quantity = watch("quantity") || 0;
 
-  const key = `${width}x${height}x${thickness}`;
+  const key = `${getFontHeightSlot(fontHeight)}x${thickness}`;
 
-  const priceSchema = myungsungPriceSchema[watch("type")];
+  const priceSchema = myungsungSkashiPriceSchema[watch("type")];
   const price = priceSchema[key as keyof typeof priceSchema] * quantity;
   const totalPrice = isNaN(price) ? 0 : price;
 
@@ -427,7 +376,6 @@ function AcrylicSpecBox() {
         <DropdownV2
           width="100%"
           options={colorOptions}
-          disabled={isDisableColor}
           optionContainerWidth="100%"
           {...getSimpleProps({ key: "color", setValue, watch, errors })}
         />
@@ -442,32 +390,31 @@ function AcrylicSpecBox() {
           onChange={(value) => {
             setValue("thickness", value);
             trigger("thickness");
-            trigger("width");
-            trigger("height");
+            trigger("fontHeight");
           }}
         />
       </SpecItem>
       <SpecItem>
-        <SpecLabel>가로</SpecLabel>
+        <SpecLabel>글씨체</SpecLabel>
         <TextInputV2
           width="100%"
-          unit="mm"
-          {...getSimpleProps({ key: "width", setValue, watch, errors })}
+          placeholder="예) 나눔스퀘어라운드, 나눔바른고딕 등"
+          {...getSimpleProps({ key: "fontFamily", setValue, watch, errors })}
         />
       </SpecItem>
       <SpecItem>
-        <SpecLabel>세로</SpecLabel>
+        <SpecLabel>글자상세 높이</SpecLabel>
         <TextInputV2
           width="100%"
           unit="mm"
-          {...getSimpleProps({ key: "height", setValue, watch, errors })}
+          {...getSimpleProps({ key: "fontHeight", setValue, watch, errors })}
         />
       </SpecItem>
       <SpecItem>
-        <SpecLabel>수량</SpecLabel>
+        <SpecLabel>글자수</SpecLabel>
         <TextInputV2
           width="100%"
-          unit="EA"
+          unit="자"
           {...getSimpleProps({ key: "quantity", setValue, watch, errors })}
         />
       </SpecItem>
@@ -483,140 +430,6 @@ function AcrylicSpecBox() {
   );
 }
 
-function PostProcessingBox() {
-  const { watch, setValue } = useFormContext<AcrylicFormSource>();
-
-  const handleClick = (key: keyof typeof MyungsungPostProcessingType) => {
-    const currentPostProcessing = watch("postProcessing") || [];
-
-    if (key === "LASER_PROCESSING") {
-      if (currentPostProcessing.includes("LASER_PROCESSING")) {
-        setValue(
-          "postProcessing",
-          currentPostProcessing.filter((item) => item !== "LASER_PROCESSING")
-        );
-      } else {
-        setValue("postProcessing", ["LASER_PROCESSING"]);
-      }
-      return;
-    }
-
-    if (
-      currentPostProcessing.includes(
-        key as keyof typeof MyungsungPostProcessingType
-      )
-    ) {
-      setValue(
-        "postProcessing",
-        currentPostProcessing.filter(
-          (item) => item !== (key as keyof typeof MyungsungPostProcessingType)
-        )
-      );
-    } else {
-      setValue("postProcessing", [
-        ...currentPostProcessing.filter((item) => item !== "LASER_PROCESSING"),
-        key,
-      ] as (keyof typeof MyungsungPostProcessingType)[]);
-    }
-  };
-
-  const handleProcessingChange = (
-    key: keyof typeof MyungsungPostProcessingType,
-    value: string
-  ) => {
-    const currentPostProcessingOptions = watch("postProcessingOptions") || [];
-    setValue("postProcessingOptions", [
-      ...currentPostProcessingOptions.filter((option) => option.key !== key),
-      {
-        key,
-        value,
-        price: MyungsungPostProcessingPriceType[key] || 0,
-      },
-    ]);
-  };
-
-  return (
-    <PostProcessingWrapper>
-      <PostProcessingGrid>
-        {Object.keys(MyungsungPostProcessingType).map((key) => {
-          return (
-            <AcrylicGridItem
-              key={key}
-              selected={watch("postProcessing")?.includes(
-                key as keyof typeof MyungsungPostProcessingType
-              )}
-              onClick={() =>
-                handleClick(key as keyof typeof MyungsungPostProcessingType)
-              }
-            >
-              {
-                MyungsungPostProcessingType[
-                  key as keyof typeof MyungsungPostProcessingType
-                ]
-              }
-            </AcrylicGridItem>
-          );
-        })}
-      </PostProcessingGrid>
-      {(watch("postProcessing")?.length || 0) > 0 ? (
-        <PostProcessingOptionBox>
-          {watch("postProcessing")?.map((key) => (
-            <PostProcessingOption
-              key={key}
-              type={key}
-              onChange={(value) => handleProcessingChange(key, value)}
-            />
-          ))}
-        </PostProcessingOptionBox>
-      ) : (
-        <EmptyBox>선택된 가공 옵션이 없습니다.</EmptyBox>
-      )}
-    </PostProcessingWrapper>
-  );
-}
-
-function PostProcessingOption({
-  type,
-  onChange,
-}: {
-  type: keyof typeof MyungsungPostProcessingType;
-  onChange?: (value: string) => void;
-}) {
-  const { watch } = useFormContext<AcrylicFormSource>();
-
-  const postProcessingOptions = watch("postProcessingOptions") || [];
-
-  const selectedProcessingOption = postProcessingOptions.find(
-    (option) => option.key === type
-  )?.value;
-
-  const options = myungsungPostProcessingOptions[type] || [];
-  const processingFee = MyungsungPostProcessingPriceType[type] || 0;
-  const processingFeeString =
-    processingFee > 0 ? `+${processingFee.toLocaleString()}원` : "무료";
-
-  return (
-    <PostProcessingOptionWrapper>
-      <PostProcessingOptionLabel>
-        {MyungsungPostProcessingType[type]}
-      </PostProcessingOptionLabel>
-      <PostProcessingOptionInput>
-        <DropdownV2
-          width="100%"
-          options={options}
-          optionContainerWidth="100%"
-          value={selectedProcessingOption}
-          onChange={onChange}
-        />
-      </PostProcessingOptionInput>
-      <ButtonV2 style={{ marginLeft: "10px" }}>사진보기</ButtonV2>
-      <PostProcessingOptionPriceLabel>
-        {processingFeeString}
-      </PostProcessingOptionPriceLabel>
-    </PostProcessingOptionWrapper>
-  );
-}
-
 function EstimateTable({
   data,
   onDelete,
@@ -627,7 +440,7 @@ function EstimateTable({
   return (
     <EstimateTableBox>
       <TableV2
-        columns={myungsungEstimateColumns({
+        columns={myungsungSkashiEstimateColumns({
           onDelete: onDelete,
         })}
         data={data}
@@ -660,12 +473,8 @@ function TotalPriceBox({ estimates }: { estimates: Estimate[] }) {
             100원 단위 결제 금액에서 <b>결제수량</b>대로 수량을 동일하게
             입력하여 구매하시면 됩니다.
           </li>
-          <li>
-            포맥스, 거울 아크릴 사이즈는 900x1800mm 이하로 주문 가능합니다.
-          </li>
-          <li>
-            그 외 모든 아크릴 사이즈는 1200x2400mm 이하로 주문 가능합니다.
-          </li>
+          <li>스카시 사이즈는 300x4000mm 이하로 주문 가능합니다.</li>
+          <li>주문하실 문장의 글자 수를 세어 글자수에 입력해주시면 됩니다.</li>
         </ul>
       </div>
       <div
@@ -905,7 +714,7 @@ const SpecLabel = styled.label<{ color?: string }>`
   font-size: 1.2rem;
   font-weight: 700;
   margin-right: 10px;
-  min-width: 60px;
+  min-width: 120px;
   color: ${(props) => props.color || "#000000"};
 `;
 
