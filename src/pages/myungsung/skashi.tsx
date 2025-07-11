@@ -1,5 +1,4 @@
 import Estimate from "@/company/myungsung/models/Estimate";
-import myungsungEstimateColumns from "@/company/myungsung/myungsungEstimateColumns";
 import myungsungSkashiColorOptions from "@/company/myungsung/myungsungSkashiColorOptions";
 import myungsungSkashiEstimateColumns from "@/company/myungsung/myungsungSkashiEstimateColumns";
 import myungsungSkashiPriceSchema from "@/company/myungsung/myungsungSkashiPriceSchema";
@@ -268,7 +267,7 @@ export default function MyungsungSkashiPage() {
             style={{ backgroundColor: "#00C73C", marginLeft: "0px" }}
             onClick={() =>
               window.open(
-                "https://smartstore.naver.com/sellacrylic/products/5762492997",
+                "https://smartstore.naver.com/sellacrylic/products/6739787008",
                 "_blank"
               )
             }
