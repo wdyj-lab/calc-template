@@ -397,7 +397,7 @@ function AcrylicSpecBox() {
         <SpecLabel>글씨체</SpecLabel>
         <TextInputV2
           width="100%"
-          placeholder="예) 나눔스퀘어라운드, 나눔바른고딕 등"
+          placeholder="예) 메일참조 (ys9978ys@naver.com)"
           {...getSimpleProps({ key: "fontFamily", setValue, watch, errors })}
         />
       </SpecItem>
