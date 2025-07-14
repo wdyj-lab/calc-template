@@ -23,6 +23,7 @@ import { FormProvider, useForm, useFormContext } from "react-hook-form";
 import { styled } from "styled-components";
 import * as yup from "yup";
 import emailjs from "@emailjs/browser";
+import myungsungPostProcessingImageUrl from "@/company/myungsung/myungsungPostProcessingImageUrl";
 
 interface AcrylicFormSource {
   type: keyof typeof MyungsungAcrylicType;
@@ -609,7 +610,19 @@ function PostProcessingOption({
           onChange={onChange}
         />
       </PostProcessingOptionInput>
-      <ButtonV2 style={{ marginLeft: "10px" }}>사진보기</ButtonV2>
+      <ButtonV2
+        style={{ marginLeft: "10px" }}
+        onClick={() => {
+          const imageUrl = myungsungPostProcessingImageUrl[type];
+          window.open(
+            imageUrl,
+            "_blank",
+            "width=800,height=600,scrollbars=yes,resizable=yes"
+          );
+        }}
+      >
+        사진보기
+      </ButtonV2>
       <PostProcessingOptionPriceLabel>
         {processingFeeString}
       </PostProcessingOptionPriceLabel>
