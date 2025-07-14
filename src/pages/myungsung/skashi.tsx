@@ -50,8 +50,8 @@ export default function MyungsungSkashiPage() {
     fontHeight: yup
       .number()
       .typeError("글자 상세 높이는 숫자로 입력해주세요.")
-      .min(300, "글자 상세 높이는 최소 300mm입니다.")
-      .max(4000, "글자 상세 높이는 최대 4000mm입니다.")
+      .min(30, "글자 상세 높이는 최소 30mm입니다.")
+      .max(400, "글자 상세 높이는 최대 400mm입니다.")
       .required("글자 상세 높이를 입력해주세요."),
     quantity: yup
       .number()
@@ -93,8 +93,7 @@ export default function MyungsungSkashiPage() {
     resolver: yupResolver(customerFormResolver),
   });
 
-  const mmToCmRoundedUp = (mmValue: number) => Math.ceil(mmValue / 100) * 10;
-  const fontHeight = mmToCmRoundedUp(methods.watch("fontHeight") || 0);
+  const fontHeight = methods.watch("fontHeight") || 0;
   const thickness = Number(methods.watch("thickness") || 0);
   const quantity = methods.watch("quantity") || 0;
   const letter = methods.watch("letter") || "";
@@ -357,8 +356,7 @@ function AcrylicSpecBox() {
   const colorOptions = myungsungSkashiColorOptions[watch("type")] || [];
   const thicknessOptions = myungsungSkashiThicknessOptions[watch("type")] || [];
 
-  const mmToCmRoundedUp = (mmValue: number) => Math.ceil(mmValue / 100) * 10;
-  const fontHeight = mmToCmRoundedUp(watch("fontHeight") || 0);
+  const fontHeight = watch("fontHeight") || 0;
   const thickness = Number(watch("thickness") || 0);
   const quantity = watch("quantity") || 0;
 
@@ -397,7 +395,7 @@ function AcrylicSpecBox() {
         <SpecLabel>글씨체</SpecLabel>
         <TextInputV2
           width="100%"
-          placeholder="예) 메일참조 (ys9978ys@naver.com)"
+          placeholder="예) 메일참조 (ak9978@naver.com), 산스체, 메로나체 등"
           {...getSimpleProps({ key: "fontFamily", setValue, watch, errors })}
         />
       </SpecItem>
@@ -472,7 +470,7 @@ function TotalPriceBox({ estimates }: { estimates: Estimate[] }) {
             100원 단위 결제 금액에서 <b>결제수량</b>대로 수량을 동일하게
             입력하여 구매하시면 됩니다.
           </li>
-          <li>스카시 사이즈는 300x4000mm 이하로 주문 가능합니다.</li>
+          <li>스카시 사이즈는 30x400mm 이하로 주문 가능합니다.</li>
           <li>주문하실 문장의 글자 수를 세어 글자수에 입력해주시면 됩니다.</li>
         </ul>
       </div>
