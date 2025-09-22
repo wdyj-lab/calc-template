@@ -137,6 +137,7 @@ export default function ArtePage() {
             src="/assets/arte/return_ic.jpg"
             alt="주문페이지로 가기"
             style={{ cursor: "pointer" }}
+            onClick={() => console.log("Go to order page")}
           />
           <img
             src="/assets/arte/reset_ic.jpg"
