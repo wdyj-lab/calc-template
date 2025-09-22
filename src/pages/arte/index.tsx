@@ -5,7 +5,9 @@ import getSimpleProps from "@/lib/utils/getSimpleProps";
 import { StringLabelOption } from "@/types/Option";
 import Image from "next/image";
 import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
 import { styled } from "styled-components";
+import * as yup from "yup";
 
 export default function ArtePage() {
   const quantityOptions = [
@@ -93,21 +95,64 @@ export default function ArtePage() {
     "10000~/alpha60/twoSideFull": 190,
   };
 
+  const formResolver = yup
+    .object<{
+      quantity: string;
+      color: string;
+      page: string;
+      ea: string;
+    }>()
+    .shape({
+      quantity: yup.string().required("수량을 선택해주세요"),
+      color: yup.string(),
+      page: yup.string(),
+      ea: yup
+        .string()
+        .required("수량을 입력해주세요")
+        .test(
+          "range-validation",
+          "선택한 수량 범위에 맞지 않습니다",
+          function (value) {
+            const { quantity } = this.parent;
+            if (!quantity || !value) return true;
+
+            const eaNumber = parseInt(value);
+            if (isNaN(eaNumber)) return false;
+
+            if (quantity.includes("~")) {
+              const [minStr, maxStr] = quantity.split("~");
+              const min = parseInt(minStr);
+
+              if (maxStr === "") {
+                return eaNumber >= min;
+              } else {
+                const max = parseInt(maxStr);
+                return eaNumber >= min && eaNumber < max;
+              }
+            }
+
+            return true;
+          }
+        ),
+    });
+
   const {
     setValue,
     watch,
     reset,
+    trigger,
     formState: { errors },
   } = useForm({
     mode: "onChange",
     reValidateMode: "onChange",
+    resolver: yupResolver(formResolver),
   });
 
   const seletedOptionKey = `${watch("quantity")}/${watch("color")}/${watch(
     "page"
   )}`;
 
-  const totalPrice = unitPrice[seletedOptionKey] * (watch("ea") || 0);
+  const totalPrice = unitPrice[seletedOptionKey] * Number(watch("ea") || 0);
 
   const resultPrice = isNaN(totalPrice)
     ? "금액자동계산"
@@ -241,6 +286,11 @@ export default function ArtePage() {
                   watch,
                   errors,
                 })}
+                onChange={async (value) => {
+                  setValue("quantity", value);
+                  setValue("ea", "");
+                  await trigger("ea");
+                }}
               />
             </td>
             <td
@@ -266,8 +316,7 @@ export default function ArtePage() {
             >
               <DropdownV2
                 width="100%"
-                optionContainerWidth="100%"
-                options={pageOptions[watch("color")] || []}
+                options={pageOptions[watch("color") ?? ""] || []}
                 placeholder="인쇄면선택"
                 {...getSimpleProps({ key: "page", setValue, watch, errors })}
               />
@@ -275,7 +324,7 @@ export default function ArtePage() {
             <td
               style={{
                 border: "1px solid black",
-                padding: "10px",
+                padding: "24px 10px",
                 textAlign: "center",
               }}
             >
@@ -329,7 +378,7 @@ export default function ArtePage() {
 
 const Layout = styled.div`
   width: 100%;
-  height: 100vh;
+  min-width: 1000px;
   max-width: 1000px;
 
   margin: 0 auto;
