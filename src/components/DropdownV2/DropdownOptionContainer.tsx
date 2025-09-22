@@ -1,11 +1,11 @@
 import Color from "color";
-import { isEqual } from "lodash-es";
+import { isEqual, debounce } from "lodash-es";
 import React, { FC, useState, useMemo, useCallback, useEffect } from "react";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import styled, { css } from "styled-components";
 
 import foundations from "../../foundations";
-import useScrollLockOnMobile from "../../hooks/useScrollLockOnMobile";
+import breakpoints from "../../foundations/breakpoints";
 import type { StringLabelOption } from "../../types/Option";
 import generateMediaQuery from "../../utils/generateMediaQuery";
 import Divider from "../Divider";
@@ -27,6 +27,7 @@ interface DropdownOptionContainerProps {
   withAllCheckOption?: boolean;
   optionContainerOpenDirection: OpenDirection;
   scrollMaxHeight?: string;
+  disableMobilePopup?: boolean;
 }
 
 const DropdownOptionContainer: FC<DropdownOptionContainerProps> = ({
@@ -41,8 +42,45 @@ const DropdownOptionContainer: FC<DropdownOptionContainerProps> = ({
   withAllCheckOption,
   optionContainerOpenDirection,
   scrollMaxHeight,
+  disableMobilePopup = false,
 }) => {
-  useScrollLockOnMobile();
+  useEffect(() => {
+    if (!disableMobilePopup) {
+      const body = document.querySelector("body");
+      const scrollPosition = globalThis.scrollY;
+
+      const setScrollLock = () => {
+        body!.classList.add("scroll-locked");
+        body!.style.top = `-${scrollPosition}px`;
+      };
+
+      const unsetScrollLock = () => {
+        body!.classList.remove("scroll-locked");
+        body!.style.removeProperty("top");
+        globalThis.scrollTo(0, scrollPosition);
+      };
+
+      if (globalThis.innerWidth < breakpoints.md) {
+        setScrollLock();
+      }
+
+      const debouncedScrollLocker = debounce(() => {
+        if (globalThis.innerWidth < breakpoints.md) {
+          setScrollLock();
+        } else {
+          unsetScrollLock();
+        }
+      }, 100);
+
+      globalThis.addEventListener("resize", debouncedScrollLocker);
+      setScrollLock();
+
+      return () => {
+        globalThis.removeEventListener("resize", debouncedScrollLocker);
+        unsetScrollLock();
+      };
+    }
+  }, [disableMobilePopup]);
 
   const isSelectedAll =
     withAllCheckOption && value && value.length === options.length;
@@ -121,9 +159,10 @@ const DropdownOptionContainer: FC<DropdownOptionContainerProps> = ({
     <OptionContainer
       optionContainerWidth={optionContainerWidth}
       openDirection={optionContainerOpenDirection}
+      disableMobilePopup={disableMobilePopup}
       role="list"
     >
-      {placeholder && <MobileTitleLabel>{placeholder}</MobileTitleLabel>}
+      {placeholder && !disableMobilePopup && <MobileTitleLabel>{placeholder}</MobileTitleLabel>}
       {useFilter && (
         <>
           <FilterInput
@@ -165,6 +204,7 @@ const DropdownOptionContainer: FC<DropdownOptionContainerProps> = ({
               }
             }}
             idx={1}
+            disableMobilePopup={disableMobilePopup}
           />
         )}
         {filteredOptions.length ? (
@@ -211,6 +251,7 @@ const DropdownOptionContainer: FC<DropdownOptionContainerProps> = ({
                 onSelect={handleOptionSelect}
                 isLastOption={filteredOptions.length - 1 === index}
                 idx={tabIndex}
+                disableMobilePopup={disableMobilePopup}
               />
             );
           })
@@ -248,6 +289,7 @@ const StyledScrollbar = styled(PerfectScrollbar)<{
 const OptionContainer = styled.div<{
   optionContainerWidth: string;
   openDirection: OpenDirection;
+  disableMobilePopup?: boolean;
 }>`
   position: absolute;
   ${({ openDirection }) =>
@@ -278,27 +320,29 @@ const OptionContainer = styled.div<{
   z-index: ${({ theme }) => theme.elevation.contents};
 
   @media ${generateMediaQuery("<", "md")} {
-    background-color: #ffffff;
-    position: fixed;
-    z-index: ${({ theme }) => theme.elevation.PopUp + 5};
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    margin: 0 auto;
-    width: auto;
-    min-width: min(calc(100vw - 64px), 360px);
-    max-width: 360px;
-    max-height: 375px;
-    padding: 28px 24px;
-    border-radius: 10px;
-    box-shadow: 0px 0px 10px
-        ${({ theme }) =>
-          Color(theme.palette.core.Shadow).alpha(0.25).toString()},
-      0px 30px 30px
-        ${({ theme }) => Color(theme.palette.core.Shadow).alpha(0.2).toString()},
-      0px 25px 40px
-        ${({ theme }) =>
-          Color(theme.palette.core.Shadow).alpha(0.15).toString()};
+    ${({ disableMobilePopup }) => !disableMobilePopup && css`
+      background-color: #ffffff;
+      position: fixed;
+      z-index: ${({ theme }) => theme.elevation.PopUp + 5};
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      margin: 0 auto;
+      width: auto;
+      min-width: min(calc(100vw - 64px), 360px);
+      max-width: 360px;
+      max-height: 375px;
+      padding: 28px 24px;
+      border-radius: 10px;
+      box-shadow: 0px 0px 10px
+          ${({ theme }) =>
+            Color(theme.palette.core.Shadow).alpha(0.25).toString()},
+        0px 30px 30px
+          ${({ theme }) => Color(theme.palette.core.Shadow).alpha(0.2).toString()},
+        0px 25px 40px
+          ${({ theme }) =>
+            Color(theme.palette.core.Shadow).alpha(0.15).toString()};
+    `}
   }
 
   .ps__rail-x {

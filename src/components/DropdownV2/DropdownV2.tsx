@@ -43,6 +43,7 @@ export interface DropdownV2Props {
   optionContainerOpenDirection?: OpenDirection;
   labelDisplayType?: LabelDisplayType;
   scrollMaxHeight?: string;
+  disableMobilePopup?: boolean;
 }
 
 const DropdownV2: FC<DropdownV2Props> = ({
@@ -67,6 +68,7 @@ const DropdownV2: FC<DropdownV2Props> = ({
   optionContainerOpenDirection = "down",
   labelDisplayType = "default",
   scrollMaxHeight,
+  disableMobilePopup = false,
 }) => {
   const ref = useRef(null);
 
@@ -126,7 +128,7 @@ const DropdownV2: FC<DropdownV2Props> = ({
         />
         {isOpened && (
           <>
-            <DropdownOptionBackground onClick={handleToggleDropdown} />
+            <DropdownOptionBackground onClick={handleToggleDropdown} disableMobilePopup={disableMobilePopup} />
             <DropdownOptionContainer
               dropdownType={type}
               optionContainerWidth={optionContainerWidth}
@@ -139,6 +141,7 @@ const DropdownV2: FC<DropdownV2Props> = ({
               onChange={handleChange}
               scrollMaxHeight={scrollMaxHeight}
               optionContainerOpenDirection={optionContainerOpenDirection}
+              disableMobilePopup={disableMobilePopup}
             />
           </>
         )}
@@ -245,11 +248,11 @@ const sizeToMatchingCss = (
   }
 };
 
-const DropdownOptionBackground = styled.div`
+const DropdownOptionBackground = styled.div<{ disableMobilePopup: boolean }>`
   display: none;
 
   @media ${generateMediaQuery("<", "md")} {
-    display: block;
+    display: ${({ disableMobilePopup }) => disableMobilePopup ? "none" : "block"};
     position: fixed;
     z-index: ${(props) => props.theme.elevation.PopUp};
     top: 0;
@@ -259,9 +262,4 @@ const DropdownOptionBackground = styled.div`
     background-color: ${({ theme }) =>
       Color(theme.palette.core.Dimmed).alpha(0.5).toString()};
   }
-`;
-
-const AbsoluteHintText = styled.div`
-  position: absolute;
-  bottom: -20px;
 `;

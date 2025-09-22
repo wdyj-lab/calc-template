@@ -26,6 +26,7 @@ interface DropdownOptionProps {
   onSelect: (selectedOption: StringLabelOption) => void;
   getOptionElementHeight?: (height?: number) => void;
   idx: number;
+  disableMobilePopup?: boolean;
 }
 
 const DropdownOption: FC<DropdownOptionProps> = ({
@@ -37,6 +38,7 @@ const DropdownOption: FC<DropdownOptionProps> = ({
   onSelect,
   getOptionElementHeight,
   idx,
+  disableMobilePopup = false,
 }) => {
   const handleClick = useCallback(
     (e?: MouseEvent<HTMLDivElement>) => {
@@ -105,6 +107,7 @@ const DropdownOption: FC<DropdownOptionProps> = ({
       dropdownType={dropdownType}
       className="dropdown-option"
       isLastOption={!!isLastOption}
+      disableMobilePopup={disableMobilePopup}
       role="listitem"
       data-testid={`dropdown-option-${option.key}`}
       id={`dropdown-option-${idx}`}
@@ -128,6 +131,7 @@ const StyledDiv = styled.div<{
   disabled: boolean;
   dropdownType: DropdownType;
   isLastOption: boolean;
+  disableMobilePopup?: boolean;
 }>`
   display: flex;
   align-items: center;
@@ -165,43 +169,43 @@ const StyledDiv = styled.div<{
     `}
 
   @media ${generateMediaQuery("<", "md")} {
-    padding: 14px 0;
-    ${foundations.typography.Body1};
+    ${({ disableMobilePopup, dropdownType, selected }) => !disableMobilePopup && css`
+      padding: 14px 0;
+      ${foundations.typography.Body1};
 
-    &::before {
-      content: ${(props) =>
-    props.dropdownType === "checkbox" ? "normal" : '""'};
-      display: inline-block;
-      flex-shrink: 0;
-      margin-left: 1.5px;
-      margin-right: 13.5px;
-      width: 17px;
-      height: 17px;
-      border: 3.5px solid
-        ${(props) => props.theme.palette.core.BackgroundPrimary};
-      background-color: ${(props) =>
-    props.theme.palette.core.BackgroundPrimary};
-      box-shadow: 0 0 1.5px 1.5px
-        ${(props) => props.theme.palette.core.Borders200};
-      border-radius: 17px;
-    }
+      &::before {
+        content: ${dropdownType === "checkbox" ? "normal" : '""'};
+        display: inline-block;
+        flex-shrink: 0;
+        margin-left: 1.5px;
+        margin-right: 13.5px;
+        width: 17px;
+        height: 17px;
+        border: 3.5px solid
+          ${(props) => props.theme.palette.core.BackgroundPrimary};
+        background-color: ${(props) =>
+      props.theme.palette.core.BackgroundPrimary};
+        box-shadow: 0 0 1.5px 1.5px
+          ${(props) => props.theme.palette.core.Borders200};
+        border-radius: 17px;
+      }
 
-    ${({ selected }) =>
-    selected &&
-    css`
-        background-color: transparent;
-        ${foundations.typography.Body1};
-
-        &::before {
-          background-color: ${(props) => props.theme.palette.core.BasePrimary};
-          box-shadow: 0 0 1.5px 1.5px
-            ${(props) => props.theme.palette.core.BasePrimary};
-        }
-
-        &:hover {
+      ${selected &&
+      css`
           background-color: transparent;
-        }
-      `}
+          ${foundations.typography.Body1};
+
+          &::before {
+            background-color: ${(props) => props.theme.palette.core.BasePrimary};
+            box-shadow: 0 0 1.5px 1.5px
+              ${(props) => props.theme.palette.core.BasePrimary};
+          }
+
+          &:hover {
+            background-color: transparent;
+          }
+        `}
+    `}
   }
 `;
 

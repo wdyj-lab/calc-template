@@ -280,6 +280,7 @@ export default function ArtePage() {
                 width="100%"
                 options={quantityOptions}
                 placeholder="수량선택"
+                disableMobilePopup
                 {...getSimpleProps({
                   key: "quantity",
                   setValue,
@@ -303,6 +304,7 @@ export default function ArtePage() {
               <DropdownV2
                 width="100%"
                 options={colorOptions}
+                disableMobilePopup
                 placeholder="흑백&컬러 선택"
                 {...getSimpleProps({ key: "color", setValue, watch, errors })}
               />
@@ -317,6 +319,7 @@ export default function ArtePage() {
               <DropdownV2
                 width="100%"
                 options={pageOptions[watch("color") ?? ""] || []}
+                disableMobilePopup
                 placeholder="인쇄면선택"
                 {...getSimpleProps({ key: "page", setValue, watch, errors })}
               />
@@ -344,7 +347,7 @@ export default function ArtePage() {
                 fontSize: "1.2em",
               }}
             >
-              {resultPrice}
+              {errors["ea"] ? errors["ea"].message : resultPrice}
             </td>
           </tr>
         </tbody>
